@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://bemi7f0nqjn6k"]
 
 [ext_resource type="PackedScene" uid="uid://cxysob5m2s2s3" path="res://elements/space_ship/space_ship.tscn" id="1_7xbuc"]
-[ext_resource type="Script" uid="uid://dnhnmrwpo11g7" path="res://elements/player/space_ship_controller/player_space_ship_controller.gd" id="2_pysmo"]
+[ext_resource type="PackedScene" uid="uid://bby5t845icj60" path="res://elements/player/space_ship/viewmodel/player_space_ship_viewmodel.tscn" id="2_pysmo"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7xbuc"]
 
@@ -35,8 +35,7 @@ mesh = SubResource("BoxMesh_anlkh")
 shape = SubResource("ConcavePolygonShape3D_7xbuc")
 
 [node name="SpaceShip" parent="." instance=ExtResource("1_7xbuc")]
+slow_down_force = 16.0
 
-[node name="PlayerSpaceShipController" type="Node" parent="SpaceShip" node_paths=PackedStringArray("space_ship")]
-script = ExtResource("2_pysmo")
+[node name="PlayerSpaceShipViewmodel" parent="SpaceShip" node_paths=PackedStringArray("space_ship") instance=ExtResource("2_pysmo")]
 space_ship = NodePath("..")
-metadata/_custom_type_script = "uid://dnhnmrwpo11g7"

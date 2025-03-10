@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bh8hhjkhvqwjf"]
+
+[ext_resource type="Script" uid="uid://dnhnmrwpo11g7" path="res://elements/player/space_ship/controller/player_space_ship_controller.gd" id="1_ve002"]
+
+[node name="PlayerSpaceShipController" type="Node"]
+script = ExtResource("1_ve002")
