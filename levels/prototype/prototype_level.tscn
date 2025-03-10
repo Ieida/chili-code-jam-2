@@ -1,0 +1,42 @@
+[gd_scene load_steps=8 format=3 uid="uid://bemi7f0nqjn6k"]
+
+[ext_resource type="PackedScene" uid="uid://cxysob5m2s2s3" path="res://elements/space_ship/space_ship.tscn" id="1_7xbuc"]
+[ext_resource type="Script" uid="uid://dnhnmrwpo11g7" path="res://elements/player/space_ship_controller/player_space_ship_controller.gd" id="2_pysmo"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7xbuc"]
+
+[sub_resource type="Sky" id="Sky_pysmo"]
+sky_material = SubResource("ProceduralSkyMaterial_7xbuc")
+
+[sub_resource type="Environment" id="Environment_nkijq"]
+background_mode = 2
+sky = SubResource("Sky_pysmo")
+
+[sub_resource type="BoxMesh" id="BoxMesh_anlkh"]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_7xbuc"]
+data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
+
+[node name="PrototypeLevel" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_nkijq")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 0, 0, 0)
+
+[node name="Cube" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8)
+mesh = SubResource("BoxMesh_anlkh")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Cube"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Cube/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_7xbuc")
+
+[node name="SpaceShip" parent="." instance=ExtResource("1_7xbuc")]
+
+[node name="PlayerSpaceShipController" type="Node" parent="SpaceShip" node_paths=PackedStringArray("space_ship")]
+script = ExtResource("2_pysmo")
+space_ship = NodePath("..")
+metadata/_custom_type_script = "uid://dnhnmrwpo11g7"
