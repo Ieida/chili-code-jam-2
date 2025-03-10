@@ -9,6 +9,7 @@ script = ExtResource("1_3e46h")
 
 [node name="PlayerSpaceShipController" type="Node" parent="."]
 script = ExtResource("1_sem1a")
+look_deadzone = 0.2
 metadata/_custom_type_script = "uid://dnhnmrwpo11g7"
 
 [node name="UI" type="CanvasLayer" parent="."]
