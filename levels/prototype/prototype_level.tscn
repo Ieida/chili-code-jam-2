@@ -1,16 +1,24 @@
-[gd_scene load_steps=8 format=3 uid="uid://bemi7f0nqjn6k"]
+[gd_scene load_steps=10 format=3 uid="uid://bemi7f0nqjn6k"]
 
 [ext_resource type="PackedScene" uid="uid://cxysob5m2s2s3" path="res://elements/space_ship/space_ship.tscn" id="1_7xbuc"]
+[ext_resource type="Script" uid="uid://bedmwh8tw0vn3" path="res://levels/prototype/prototype_level.gd" id="1_yc6rk"]
 [ext_resource type="PackedScene" uid="uid://bby5t845icj60" path="res://elements/player/space_ship/viewmodel/player_space_ship_viewmodel.tscn" id="2_pysmo"]
+[ext_resource type="PackedScene" uid="uid://db2f051odpt0k" path="res://elements/enemy/enemy.tscn" id="3_nkijq"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7xbuc"]
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_yc6rk"]
+sky_top_color = Color(0, 0, 0, 1)
+sky_horizon_color = Color(0, 0, 0, 1)
+ground_bottom_color = Color(0, 0, 0, 1)
+ground_horizon_color = Color(0, 0, 0, 1)
 
-[sub_resource type="Sky" id="Sky_pysmo"]
-sky_material = SubResource("ProceduralSkyMaterial_7xbuc")
+[sub_resource type="Sky" id="Sky_x6tsm"]
+sky_material = SubResource("ProceduralSkyMaterial_yc6rk")
 
 [sub_resource type="Environment" id="Environment_nkijq"]
 background_mode = 2
-sky = SubResource("Sky_pysmo")
+sky = SubResource("Sky_x6tsm")
+ambient_light_source = 2
+ambient_light_color = Color(0.5, 0.5, 0.5, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_anlkh"]
 
@@ -18,6 +26,7 @@ sky = SubResource("Sky_pysmo")
 data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
 
 [node name="PrototypeLevel" type="Node3D"]
+script = ExtResource("1_yc6rk")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_nkijq")
@@ -39,3 +48,8 @@ slow_down_force = 16.0
 
 [node name="PlayerSpaceShipViewmodel" parent="SpaceShip" node_paths=PackedStringArray("space_ship") instance=ExtResource("2_pysmo")]
 space_ship = NodePath("..")
+
+[node name="Enemy" parent="." node_paths=PackedStringArray("target") instance=ExtResource("3_nkijq")]
+transform = Transform3D(0.694219, 0, -0.719764, 0, 1, 0, 0.719764, 0, 0.694219, -3.41531, 1.64813, -4.90587)
+target = NodePath("../Cube")
+speed = 1.0
