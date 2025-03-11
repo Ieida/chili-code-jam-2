@@ -8,6 +8,8 @@ class_name SpaceShip extends CharacterBody3D
 @export var slow_down_force: float = 4
 @export var torque_x: float = 2
 @export var torque_y: float = 2
+@onready var gun := $Gun
+@onready var gun2 := $Gun2
 var input: Vector3
 var angular_input: Vector3
 
@@ -34,3 +36,8 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity = velocity.move_toward(Vector3.ZERO, slow_down_force * delta)
 	move_and_slide()
+
+
+func _ready() -> void:
+	gun.damage_exceptions.append(self)
+	gun2.damage_exceptions.append(self)

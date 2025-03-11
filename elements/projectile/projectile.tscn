@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://ckksm8wh1v02a"]
+
+[ext_resource type="Script" uid="uid://dg3no5vmo5y52" path="res://elements/projectile/projectile.gd" id="1_0thc4"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_n2axj"]
+radius = 0.1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0thc4"]
+shading_mode = 0
+albedo_color = Color(0.25, 0.9, 1, 1)
+
+[node name="Projectile" type="ShapeCast3D"]
+enabled = false
+shape = SubResource("SphereShape3D_n2axj")
+collide_with_areas = true
+script = ExtResource("1_0thc4")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+size = Vector3(0.05, 0.05, 0.5)
+material = SubResource("StandardMaterial3D_0thc4")
