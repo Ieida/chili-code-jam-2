@@ -1,10 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://bemi7f0nqjn6k"]
+[gd_scene load_steps=13 format=3 uid="uid://bemi7f0nqjn6k"]
 
 [ext_resource type="PackedScene" uid="uid://cxysob5m2s2s3" path="res://elements/space_ship/space_ship.tscn" id="1_7xbuc"]
 [ext_resource type="Script" uid="uid://bedmwh8tw0vn3" path="res://levels/prototype/prototype_level.gd" id="1_yc6rk"]
 [ext_resource type="PackedScene" uid="uid://bby5t845icj60" path="res://elements/player/space_ship/viewmodel/player_space_ship_viewmodel.tscn" id="2_pysmo"]
 [ext_resource type="Script" uid="uid://c4b5reb6ktm03" path="res://elements/hitbox/hitbox.gd" id="2_x6tsm"]
 [ext_resource type="PackedScene" uid="uid://db2f051odpt0k" path="res://elements/enemy/enemy.tscn" id="3_nkijq"]
+[ext_resource type="PackedScene" uid="uid://3ysej5uji3er" path="res://elements/spawner/spawner.tscn" id="6_t82ty"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_yc6rk"]
 sky_top_color = Color(0, 0, 0, 1)
@@ -92,3 +93,7 @@ space_ship = NodePath("..")
 transform = Transform3D(0.694219, 0, -0.719764, 0, 1, 0, 0.719764, 0, 0.694219, -3.41531, 1.64813, -4.90587)
 target = NodePath("../Cube")
 speed = 1.0
+
+[node name="Spawner" parent="." instance=ExtResource("6_t82ty")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 2, -3)
+scene = ExtResource("3_nkijq")
