@@ -1,0 +1,155 @@
+[gd_scene load_steps=14 format=3 uid="uid://db2f051odpt0k"]
+
+[ext_resource type="Script" uid="uid://dgb1e74ge5xdd" path="res://elements/enemy/enemy.gd" id="1_j4vrh"]
+[ext_resource type="SpriteFrames" uid="uid://cvmd8rovf1rno" path="res://elements/enemy/sprite_frames.tres" id="1_ttpur"]
+[ext_resource type="Shader" uid="uid://csmyc2ndd11mc" path="res://shaders/perspective_sprite_flip.gdshader" id="2_ek21h"]
+[ext_resource type="Texture2D" uid="uid://cn2nhhbcijut" path="res://elements/enemy/Eyeball.png" id="3_1cx0d"]
+[ext_resource type="Script" uid="uid://c4b5reb6ktm03" path="res://elements/hitbox/hitbox.gd" id="5_vjsli"]
+[ext_resource type="Script" uid="uid://bd2d7mbbshebm" path="res://elements/state_machine/state_machine.gd" id="6_24dpr"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_j4vrh"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nc7yf"]
+atlas = ExtResource("3_1cx0d")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ek21h"]
+render_priority = 0
+shader = ExtResource("2_ek21h")
+shader_parameter/y_billboard = false
+shader_parameter/tex = SubResource("AtlasTexture_nc7yf")
+
+[sub_resource type="GDScript" id="GDScript_ek21h"]
+resource_name = "sprite"
+script/source = "@tool
+extends AnimatedSprite3D
+
+
+func _process(_delta: float) -> void:
+	var shdr = material_override as ShaderMaterial
+	if shdr and sprite_frames:
+		var tex = sprite_frames.get_frame_texture(animation, frame)
+		shdr.set_shader_parameter(\"tex\", tex)
+"
+
+[sub_resource type="GDScript" id="GDScript_bmxbo"]
+resource_name = "idle"
+script/source = "extends State
+
+
+@onready var sprite: AnimatedSprite3D = %Sprite
+
+
+func enter():
+	sprite.play(&\"idle\")
+"
+
+[sub_resource type="GDScript" id="GDScript_24dpr"]
+resource_name = "chase"
+script/source = "extends State
+
+
+@onready var enemy: Enemy = $\"../..\"
+@onready var sprite: AnimatedSprite3D = %Sprite
+
+
+func _physics_process(_delta: float) -> void:
+	if is_active:
+		var tpos = enemy.target.global_position
+		var dir = enemy.global_position.direction_to(tpos)
+		enemy.velocity = dir * enemy.speed
+		enemy.look_at(tpos)
+
+
+func enter():
+	sprite.play(&\"walk\")
+
+
+func exit():
+	pass
+"
+
+[sub_resource type="GDScript" id="GDScript_wlc73"]
+resource_name = "attack"
+script/source = "extends State
+
+
+@export var time_until_hit: float = 0.75
+@onready var enemy: Enemy = $\"../..\"
+@onready var sprite: AnimatedSprite3D = %Sprite
+var time_elapsed: float
+
+
+func _on_anim_finished():
+	if sprite.animation == &\"attack\":
+		machine.deactivate_state(self)
+
+
+func _physics_process(delta: float) -> void:
+	if is_active and time_elapsed < time_until_hit:
+		time_elapsed += delta
+		if time_elapsed >= time_until_hit:
+			deal_damage()
+
+
+func _ready() -> void:
+	sprite.animation_finished.connect(_on_anim_finished)
+
+
+func deal_damage():
+	var epos = enemy.global_position
+	var tpos = enemy.target.global_position
+	var dst = epos.distance_to(tpos)
+	if dst < enemy.attack_range:
+		if enemy.target.has_node(^\"Hitbox\"):
+			var hb = enemy.target.get_node(^\"Hitbox\") as Hitbox
+			hb.hit(enemy.damage)
+
+
+func enter():
+	time_elapsed = 0
+	sprite.play(&\"attack\")
+	enemy.velocity = Vector3.ZERO
+"
+
+[node name="Enemy" type="CharacterBody3D"]
+script = ExtResource("1_j4vrh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_j4vrh")
+
+[node name="Sprite" type="AnimatedSprite3D" parent="."]
+unique_name_in_owner = true
+material_override = SubResource("ShaderMaterial_ek21h")
+pixel_size = 0.03
+billboard = 1
+double_sided = false
+texture_filter = 0
+sprite_frames = ExtResource("1_ttpur")
+animation = &"idle"
+frame_progress = 0.300387
+script = SubResource("GDScript_ek21h")
+
+[node name="Hitbox" type="Area3D" parent="."]
+monitoring = false
+script = ExtResource("5_vjsli")
+metadata/_custom_type_script = "uid://c4b5reb6ktm03"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
+shape = SubResource("SphereShape3D_j4vrh")
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("6_24dpr")
+metadata/_custom_type_script = "uid://bd2d7mbbshebm"
+
+[node name="Idle" type="Node" parent="StateMachine"]
+script = SubResource("GDScript_bmxbo")
+metadata/_custom_type_script = "uid://b57s6a7jcbphi"
+
+[node name="Chase" type="Node" parent="StateMachine"]
+script = SubResource("GDScript_24dpr")
+metadata/_custom_type_script = "uid://b57s6a7jcbphi"
+
+[node name="Attack" type="Node" parent="StateMachine"]
+script = SubResource("GDScript_wlc73")
+metadata/_custom_type_script = "uid://b57s6a7jcbphi"
