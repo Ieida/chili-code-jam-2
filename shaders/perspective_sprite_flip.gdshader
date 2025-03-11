@@ -13,25 +13,18 @@ void vertex() {
 		MODELVIEW_MATRIX = VIEW_MATRIX * mat4(INV_VIEW_MATRIX[0], INV_VIEW_MATRIX[1], INV_VIEW_MATRIX[2], MODEL_MATRIX[3]);
 	}
 	MODELVIEW_NORMAL_MATRIX = mat3(MODELVIEW_MATRIX);
-}
-
-uniform bool flipped = false;
-
-void fragment() {
-	bool flp = flipped;
+	
+	// Flipping based on view
 	vec3 right = (MODEL_MATRIX * vec4(1., 0., 0., 0.)).xyz;
 	vec3 node_to_cam = normalize(CAMERA_POSITION_WORLD - NODE_POSITION_WORLD);
 	float dot_prod = dot(right, node_to_cam);
-	if (dot_prod > 0.0) {
-		flp = false;
-	} else {
-		flp = true;
+	if (dot_prod < 0.0) {
+		VERTEX.x = -VERTEX.x;
 	}
-	vec2 uv = UV;
-	if (flp) {
-		uv.x = 1.0 - uv.x;
-	}
-	vec4 col = texture(tex, uv);
+}
+
+void fragment() {
+	vec4 col = texture(tex, UV);
 	ALBEDO = vec3(col.r, col.g, col.b);
 	ALPHA = col.a;
 }

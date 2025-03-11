@@ -9,26 +9,27 @@
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_j4vrh"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_ohg34"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_nc7yf"]
 atlas = ExtResource("3_1cx0d")
-region = Rect2(0, 128, 32, 32)
+region = Rect2(0, 0, 32, 32)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ek21h"]
 render_priority = 0
 shader = ExtResource("2_ek21h")
 shader_parameter/y_billboard = false
-shader_parameter/tex = SubResource("AtlasTexture_ohg34")
-shader_parameter/flipped = false
+shader_parameter/tex = SubResource("AtlasTexture_nc7yf")
 
 [sub_resource type="GDScript" id="GDScript_ek21h"]
 resource_name = "sprite"
-script/source = "extends AnimatedSprite3D
+script/source = "@tool
+extends AnimatedSprite3D
 
 
 func _process(_delta: float) -> void:
 	var shdr = material_override as ShaderMaterial
-	var tex = sprite_frames.get_frame_texture(animation, frame)
-	shdr.set_shader_parameter(\"tex\", tex)
+	if shdr and sprite_frames:
+		var tex = sprite_frames.get_frame_texture(animation, frame)
+		shdr.set_shader_parameter(\"tex\", tex)
 "
 
 [sub_resource type="GDScript" id="GDScript_bmxbo"]
@@ -120,8 +121,8 @@ billboard = 1
 double_sided = false
 texture_filter = 0
 sprite_frames = ExtResource("1_ttpur")
-animation = &"death"
-frame_progress = 0.0933473
+animation = &"idle"
+frame_progress = 0.6057
 script = SubResource("GDScript_ek21h")
 
 [node name="Hitbox" type="Area3D" parent="."]
