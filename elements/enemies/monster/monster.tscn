@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3 uid="uid://blqeiynsxdax7"]
+
+[ext_resource type="PackedScene" uid="uid://db2f051odpt0k" path="res://elements/enemy/enemy.tscn" id="1_h5nhs"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_g2xjq"]
+animations = [{
+"frames": [],
+"loop": true,
+"name": &"death",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"walk",
+"speed": 5.0
+}]
+
+[node name="Monster" instance=ExtResource("1_h5nhs")]
+
+[node name="Sprite" parent="." index="1"]
+sprite_frames = SubResource("SpriteFrames_g2xjq")
+frame_progress = 0.0
