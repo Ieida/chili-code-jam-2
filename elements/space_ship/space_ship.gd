@@ -20,8 +20,8 @@ func _physics_process(delta: float) -> void:
 		angular_input = Vector3.ZERO
 		inp.x *= torque_x
 		inp.y *= torque_y
-		var up = global_basis * Vector3.UP
-		var right = global_basis * Vector3.RIGHT
+		var up = global_basis.y.normalized()
+		var right = global_basis.x.normalized()
 		rotate(up, deg_to_rad(-inp.x))
 		rotate(right, deg_to_rad(-inp.y))
 	global_rotation.z = move_toward(global_rotation.z, 0, delta)
