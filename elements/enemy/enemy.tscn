@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://db2f051odpt0k"]
+[gd_scene load_steps=16 format=3 uid="uid://db2f051odpt0k"]
 
 [ext_resource type="Script" uid="uid://dgb1e74ge5xdd" path="res://elements/enemy/enemy.gd" id="1_j4vrh"]
 [ext_resource type="SpriteFrames" uid="uid://cvmd8rovf1rno" path="res://elements/enemy/sprite_frames.tres" id="1_ttpur"]
@@ -9,15 +9,15 @@
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_j4vrh"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_nc7yf"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_qjgv0"]
 atlas = ExtResource("3_1cx0d")
-region = Rect2(0, 0, 32, 32)
+region = Rect2(32, 32, 32, 32)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ek21h"]
 render_priority = 0
 shader = ExtResource("2_ek21h")
 shader_parameter/y_billboard = false
-shader_parameter/tex = SubResource("AtlasTexture_nc7yf")
+shader_parameter/tex = SubResource("AtlasTexture_qjgv0")
 
 [sub_resource type="GDScript" id="GDScript_ek21h"]
 resource_name = "sprite"
@@ -112,6 +112,56 @@ func enter():
 	enemy.velocity = Vector3.ZERO
 "
 
+[sub_resource type="GDScript" id="GDScript_khahs"]
+resource_name = "hurt"
+script/source = "extends State
+
+
+@onready var enemy: Enemy = $\"../..\"
+@onready var sprite: AnimatedSprite3D = %Sprite
+
+
+func _on_anim_finished():
+	if sprite.animation == &\"hurt\":
+		machine.deactivate_state(self)
+
+
+func _ready() -> void:
+	sprite.animation_finished.connect(_on_anim_finished)
+
+
+func enter():
+	enemy.velocity = Vector3.ZERO
+	if sprite.animation == &\"hurt\":
+		sprite.stop()
+	sprite.play(&\"hurt\")
+"
+
+[sub_resource type="GDScript" id="GDScript_4r688"]
+resource_name = "death"
+script/source = "extends State
+
+
+@onready var enemy: Enemy = $\"../..\"
+@onready var sprite: AnimatedSprite3D = %Sprite
+
+
+func _on_anim_finished():
+	if sprite.animation == &\"death\":
+		enemy.queue_free()
+		machine.deactivate_state(self)
+
+
+func _ready() -> void:
+	sprite.animation_finished.connect(_on_anim_finished)
+
+
+func enter():
+	enemy.process_mode = Node.PROCESS_MODE_DISABLED
+	enemy.velocity = Vector3.ZERO
+	sprite.play(&\"death\")
+"
+
 [node name="Enemy" type="CharacterBody3D"]
 script = ExtResource("1_j4vrh")
 
@@ -120,19 +170,22 @@ shape = SubResource("SphereShape3D_j4vrh")
 
 [node name="Sprite" type="AnimatedSprite3D" parent="."]
 unique_name_in_owner = true
+process_mode = 3
 material_override = SubResource("ShaderMaterial_ek21h")
 pixel_size = 0.03
 billboard = 1
 double_sided = false
 texture_filter = 0
 sprite_frames = ExtResource("1_ttpur")
-animation = &"idle"
-frame_progress = 0.300387
+animation = &"walk"
+frame = 1
+frame_progress = 0.0689066
 script = SubResource("GDScript_ek21h")
 
 [node name="Hitbox" type="Area3D" parent="."]
 monitoring = false
 script = ExtResource("5_vjsli")
+max_health = 100.0
 metadata/_custom_type_script = "uid://c4b5reb6ktm03"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
@@ -152,4 +205,13 @@ metadata/_custom_type_script = "uid://b57s6a7jcbphi"
 
 [node name="Attack" type="Node" parent="StateMachine"]
 script = SubResource("GDScript_wlc73")
+time_until_hit = 0.375
+metadata/_custom_type_script = "uid://b57s6a7jcbphi"
+
+[node name="Hurt" type="Node" parent="StateMachine"]
+script = SubResource("GDScript_khahs")
+metadata/_custom_type_script = "uid://b57s6a7jcbphi"
+
+[node name="Death" type="Node" parent="StateMachine"]
+script = SubResource("GDScript_4r688")
 metadata/_custom_type_script = "uid://b57s6a7jcbphi"

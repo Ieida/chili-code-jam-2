@@ -1,8 +1,129 @@
-[gd_scene load_steps=4 format=3 uid="uid://bby5t845icj60"]
+[gd_scene load_steps=6 format=3 uid="uid://bby5t845icj60"]
 
 [ext_resource type="Script" uid="uid://cwjotnjhe75ms" path="res://elements/player/space_ship/viewmodel/player_space_ship_viewmodel.gd" id="1_3e46h"]
 [ext_resource type="Script" uid="uid://dnhnmrwpo11g7" path="res://elements/player/space_ship/controller/player_space_ship_controller.gd" id="1_sem1a"]
 [ext_resource type="Script" uid="uid://bgqaxwbmtd50t" path="res://elements/player/crosshair/crosshair.gd" id="3_p03w2"]
+
+[sub_resource type="GDScript" id="GDScript_p03w2"]
+resource_name = "targeting"
+script/source = "extends Area3D
+
+
+@export var max_angle: float = 20
+@onready var hud: Control = %HUD
+@onready var viewmodel: PlayerSpaceShipViewmodel = get_parent() as PlayerSpaceShipViewmodel
+@onready var lockon_scene: PackedScene = preload(\"res://elements/player/lock_on_crosshair/lock_on_crosshair.tscn\")
+var free_lockons: Array[LockOnCrosshair]
+var free_targets: Array[Enemy]
+var targets: Array[Enemy]
+var lockons: Array[LockOnCrosshair]
+
+
+func _on_body_entered(body: Node3D):
+	if body is Enemy:
+		targets.append(body)
+		free_targets.append(body)
+
+
+func _on_body_exited(body: Node3D):
+	if body is Enemy and targets.has(body):
+		targets.erase(body)
+		if free_targets.has(body): free_targets.erase(body)
+
+
+func _physics_process(_delta: float) -> void:
+	global_position = viewmodel.space_ship.global_position
+	
+	for l in lockons:
+		if not is_instance_valid(l.target): free_lockon(l)
+		elif not targets.has(l.target): free_lockon(l)
+		elif is_target_out_of_range(l.target): free_lockon(l)
+		
+		var ft = find_optimal_free_target()
+		if ft:
+			if l.target:
+				if is_target_more_optimal(ft, l.target):
+					free_targets.append(l.target)
+					free_targets.erase(ft)
+					l.target = ft
+					l.reset()
+					l.show()
+			else:
+				free_targets.erase(ft)
+				l.target = ft
+				l.reset()
+				l.show()
+
+
+func _ready() -> void:
+	body_entered.connect(_on_body_entered)
+	body_exited.connect(_on_body_exited)
+
+
+func find_optimal_free_target() -> Node3D:
+	var o = viewmodel.project_ray_origin(viewmodel.crosshair.global_position)
+	var n = viewmodel.project_ray_normal(viewmodel.crosshair.global_position)
+	var ot = null
+	var ota = 0.0
+	var otd = 0.0
+	for t in free_targets:
+		var drt = o.direction_to(t.global_position)
+		var at = n.angle_to(drt)
+		if at > deg_to_rad(max_angle): continue
+		var dt = o.distance_to(t.global_position)
+		if not ot or (at < ota and dt < otd):
+			ot = t
+			ota = at
+			otd = dt
+	return ot
+
+
+func free_lockon(lockon: LockOnCrosshair):
+	lockon.hide()
+	if lockon.target and targets.has(lockon.target):
+		free_targets.append(lockon.target)
+	lockon.target = null
+	lockon.reset()
+	free_lockons.append(lockon)
+
+
+func is_target_more_optimal(ta: Node3D, tb: Node3D) -> bool:
+	var o = viewmodel.project_ray_origin(viewmodel.crosshair.global_position)
+	var n = viewmodel.project_ray_normal(viewmodel.crosshair.global_position)
+	var da = o.distance_to(ta.global_position)
+	var aa = n.angle_to(o.direction_to(ta.global_position))
+	var db = o.distance_to(tb.global_position)
+	var ab = n.angle_to(o.direction_to(tb.global_position))
+	return da < db and aa < ab
+
+
+func is_target_out_of_range(target: Node3D) -> bool:
+	var o = viewmodel.project_ray_origin(viewmodel.crosshair.global_position)
+	var n = viewmodel.project_ray_normal(viewmodel.crosshair.global_position)
+	var d = o.direction_to(target.global_position)
+	var a = n.angle_to(d)
+	return a > deg_to_rad(max_angle)
+
+
+func request_lockon():
+	if free_lockons.size() == 0:
+		spawn_lockon()
+	else:
+		var l = free_lockons.pop_front()
+		l.reset()
+		lockons.append(l)
+
+
+func spawn_lockon():
+	var c = lockon_scene.instantiate() as LockOnCrosshair
+	hud.add_child(c)
+	c.hide()
+	lockons.append(c)
+	free_lockons.append(c)
+"
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_p03w2"]
+radius = 100.0
 
 [node name="PlayerSpaceShipViewmodel" type="Camera3D"]
 script = ExtResource("1_3e46h")
@@ -12,9 +133,20 @@ script = ExtResource("1_sem1a")
 look_deadzone = 0.2
 metadata/_custom_type_script = "uid://dnhnmrwpo11g7"
 
+[node name="Targeting" type="Area3D" parent="."]
+unique_name_in_owner = true
+top_level = true
+collision_layer = 0
+monitorable = false
+script = SubResource("GDScript_p03w2")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Targeting"]
+shape = SubResource("SphereShape3D_p03w2")
+
 [node name="UI" type="CanvasLayer" parent="."]
 
-[node name="Control" type="Control" parent="UI"]
+[node name="HUD" type="Control" parent="UI"]
+unique_name_in_owner = true
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,7 +154,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Crosshair" type="Control" parent="UI/Control"]
+[node name="Crosshair" type="Control" parent="UI/HUD"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
