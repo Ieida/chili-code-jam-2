@@ -95,5 +95,4 @@ target = NodePath("../Cube")
 speed = 1.0
 
 [node name="Spawner" parent="." instance=ExtResource("6_t82ty")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 2, -3)
 scene = ExtResource("3_nkijq")

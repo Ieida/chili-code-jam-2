@@ -22,7 +22,7 @@ func _on_child_entered_tree(node: Node):
 func _on_child_exiting_tree(node: Node):
 	if node is State:
 		var n = node.name.to_snake_case()
-		if states.has(n): states.erase(node)
+		if states.has(n): states.erase(n)
 
 
 func activate_state(state: State):

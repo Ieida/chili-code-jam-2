@@ -24,7 +24,7 @@ func _physics_process(_delta: float) -> void:
 	# Handle states
 	var cs = state_machine.active_state_name
 	if not hitbox.is_health_depleted and cs != &"hurt":
-		var tdst := 0
+		var tdst := 0.0
 		if target:
 			tdst = global_position.distance_to(target.global_position)
 		if cs != &"attack" and target and tdst < attack_range:

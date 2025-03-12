@@ -3,7 +3,7 @@ class_name Projectile extends ShapeCast3D
 
 @export var damage: float = 10
 @export var lifetime: float = 10
-@export var speed: float = 50
+@export var speed: float = 100
 var time_elapsed: float
 
 

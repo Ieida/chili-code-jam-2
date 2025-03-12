@@ -148,6 +148,7 @@ script/source = "extends State
 
 func _on_anim_finished():
 	if sprite.animation == &\"death\":
+		enemy.queue_free()
 		machine.deactivate_state(self)
 
 
@@ -156,6 +157,7 @@ func _ready() -> void:
 
 
 func enter():
+	enemy.process_mode = Node.PROCESS_MODE_DISABLED
 	enemy.velocity = Vector3.ZERO
 	sprite.play(&\"death\")
 "
@@ -168,6 +170,7 @@ shape = SubResource("SphereShape3D_j4vrh")
 
 [node name="Sprite" type="AnimatedSprite3D" parent="."]
 unique_name_in_owner = true
+process_mode = 3
 material_override = SubResource("ShaderMaterial_ek21h")
 pixel_size = 0.03
 billboard = 1
