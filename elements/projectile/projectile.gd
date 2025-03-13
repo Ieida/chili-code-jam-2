@@ -11,9 +11,10 @@ var time_elapsed: float
 func _physics_process(delta: float) -> void:
 	time_elapsed += delta
 	
-	var mov = -global_basis.z.normalized() * speed * delta 
-	global_position += mov
-	target_position = mov + (mov.normalized() * length)
+	var d = -global_basis.z.normalized()
+	var mov = d * speed * delta
+	global_position += mov - (d * 0.05)
+	target_position = mov + (d * (length + 0.05))
 	force_shapecast_update()
 	if is_colliding():
 		for ci in get_collision_count():
