@@ -1,10 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://c1hwk0wp656jh"]
+[gd_scene load_steps=5 format=3 uid="uid://c1hwk0wp656jh"]
 
 [ext_resource type="Script" uid="uid://iuymiq0pp0og" path="res://game.gd" id="1_80nbo"]
 [ext_resource type="PackedScene" uid="uid://bemi7f0nqjn6k" path="res://levels/prototype/prototype_level.tscn" id="2_e2o6t"]
 [ext_resource type="PackedScene" uid="uid://eyhstgyqsf0f" path="res://menus/game_over/game_over.tscn" id="3_fc0e3"]
 [ext_resource type="PackedScene" uid="uid://127hajybfir7" path="res://credits/credits.tscn" id="3_feb5d"]
-[ext_resource type="Script" uid="uid://ci00tgebwftf6" path="res://menus/game_over/game_over.gd" id="4_7jktm"]
 
 [node name="Game" type="Node"]
 script = ExtResource("1_80nbo")
@@ -14,6 +13,7 @@ script = ExtResource("1_80nbo")
 [node name="PrototypeLevel" parent="Level" instance=ExtResource("2_e2o6t")]
 
 [node name="Menus" type="CanvasLayer" parent="."]
+layer = 128
 
 [node name="GameOver" parent="Menus" instance=ExtResource("3_fc0e3")]
 unique_name_in_owner = true
@@ -21,7 +21,6 @@ offset_left = -210.0
 offset_top = -142.5
 offset_right = 210.0
 offset_bottom = 142.5
-script = ExtResource("4_7jktm")
 
 [node name="Credits" parent="Menus" instance=ExtResource("3_feb5d")]
 unique_name_in_owner = true

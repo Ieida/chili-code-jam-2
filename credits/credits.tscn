@@ -73,6 +73,7 @@ social_link = "https://ieida.itch.io/"
 [node name="CreditsButton" parent="VBoxContainer/ScrollContainer/ButtonContainer/PanelContainer/VBoxContainer" instance=ExtResource("2_o7wt1")]
 layout_mode = 2
 text = "coder X"
+social_link = "https://thats-what-he-said.itch.io/"
 
 [node name="CreditsButton2" parent="VBoxContainer/ScrollContainer/ButtonContainer" instance=ExtResource("2_o7wt1")]
 layout_mode = 2
@@ -88,6 +89,7 @@ Ayamos"
 layout_mode = 2
 text = "Music and Sounds
 Baroo"
+social_link = "https://soundcloud.com/baroo599292369"
 
 [node name="CreditsButton" parent="VBoxContainer/ScrollContainer/ButtonContainer" instance=ExtResource("2_o7wt1")]
 layout_mode = 2
