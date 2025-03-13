@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://c1hwk0wp656jh"]
+
+[ext_resource type="Script" uid="uid://iuymiq0pp0og" path="res://game.gd" id="1_80nbo"]
+[ext_resource type="PackedScene" uid="uid://bemi7f0nqjn6k" path="res://levels/prototype/prototype_level.tscn" id="2_e2o6t"]
+[ext_resource type="PackedScene" uid="uid://127hajybfir7" path="res://credits/credits.tscn" id="3_feb5d"]
+
+[node name="Game" type="Node"]
+script = ExtResource("1_80nbo")
+
+[node name="Level" type="Node" parent="."]
+
+[node name="PrototypeLevel" parent="Level" instance=ExtResource("2_e2o6t")]
+
+[node name="Credits" parent="." instance=ExtResource("3_feb5d")]

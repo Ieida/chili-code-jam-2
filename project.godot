@@ -11,13 +11,9 @@ config_version=5
 [application]
 
 config/name="Chili Code Jam 2"
-run/main_scene="uid://bemi7f0nqjn6k"
+run/main_scene="uid://c1hwk0wp656jh"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
-
-[autoload]
-
-Credits="*res://credits/credits.tscn"
 
 [display]
 

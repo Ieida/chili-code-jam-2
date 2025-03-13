@@ -5,7 +5,8 @@ class_name CreditsButton extends Button
 
 
 func _on_pressed():
-	OS.shell_open(social_link)
+	if not social_link.is_empty():
+		OS.shell_open(social_link)
 
 
 func _ready() -> void:

@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://ca8fvsdlmgym1" path="res://credits/credits_button.gd" id="1_ofal6"]
 
 [node name="CreditsButton" type="Button"]
+custom_minimum_size = Vector2(200, 100)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -14,8 +15,8 @@ offset_right = 4.0
 offset_bottom = 4.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 32
 text = "Title
 Author"
-alignment = 0
 script = ExtResource("1_ofal6")

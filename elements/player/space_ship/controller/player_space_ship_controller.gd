@@ -29,7 +29,6 @@ func _physics_process(_delta: float) -> void:
 	if l1 and l1.target:
 		gn.look_at(l1.target.global_position)
 	if l2 and l2.target:
-		var ap = calc_aiming_point(l2.global_position)
 		gn2.look_at(l2.target.global_position)
 	# Shoot
 	if Input.is_action_pressed(&"shoot"):

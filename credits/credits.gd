@@ -1,4 +1,4 @@
-extends CanvasLayer
+class_name Credits extends CanvasLayer
 
 
 signal closed
@@ -15,20 +15,25 @@ func _input(event: InputEvent) -> void:
 			else: open()
 
 
+func _process(_delta: float) -> void:
+	if not get_viewport().gui_get_focus_owner():
+		var f = button_container.find_next_valid_focus()
+		if f: f.grab_focus()
+
+
 func _ready() -> void:
 	close()
 
 
 func close():
 	visible = false
+	get_tree().paused = false
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	closed.emit()
 
 
 func open():
 	visible = true
-	if button_container.get_child_count() > 0:
-		for c in button_container.get_children():
-			if c is Control:
-				c.grab_focus()
-				break
+	get_tree().paused = true
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	opened.emit()
