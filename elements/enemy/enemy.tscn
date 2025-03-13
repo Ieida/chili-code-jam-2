@@ -40,6 +40,11 @@ script/source = "extends State
 @onready var sprite: AnimatedSprite3D = %Sprite
 
 
+func _physics_process(_delta: float) -> void:
+	var cs = machine.active_state_name
+	if cs == NULL_STATE: machine.activate_state(self)
+
+
 func enter():
 	sprite.play(&\"idle\")
 "
@@ -59,6 +64,8 @@ func _physics_process(_delta: float) -> void:
 		var dir = enemy.global_position.direction_to(tpos)
 		enemy.velocity = dir * enemy.speed
 		enemy.look_at(tpos)
+	elif machine.active_state_name == &\"idle\" and enemy.target:
+		machine.activate_state(self)
 
 
 func enter():
@@ -78,18 +85,24 @@ script/source = "extends State
 @onready var enemy: Enemy = $\"../..\"
 @onready var sprite: AnimatedSprite3D = %Sprite
 var time_elapsed: float
+var is_on_cooldown: bool
 
 
 func _on_anim_finished():
 	if sprite.animation == &\"attack\":
+		is_on_cooldown = true
 		machine.deactivate_state(self)
 
 
 func _physics_process(delta: float) -> void:
-	if is_active and time_elapsed < time_until_hit:
-		time_elapsed += delta
-		if time_elapsed >= time_until_hit:
-			deal_damage()
+	time_elapsed = maxf(time_elapsed + delta, maxf(time_until_hit, enemy.attack_cooldown))
+	if is_active:
+		if time_elapsed < time_until_hit:
+			time_elapsed += delta
+			if time_elapsed >= time_until_hit:
+				deal_damage()
+	elif should_enter():
+		machine.activate_state(self)
 
 
 func _ready() -> void:
@@ -108,8 +121,23 @@ func deal_damage():
 
 func enter():
 	time_elapsed = 0
+	is_on_cooldown = false
 	sprite.play(&\"attack\")
 	enemy.velocity = Vector3.ZERO
+
+
+func exit():
+	time_elapsed = 0
+
+
+func should_enter() -> bool:
+	if machine.active_state_name == &\"attack\": return false
+	elif not enemy.target: return false
+	var dst = enemy.global_position.distance_to(enemy.target.global_position)
+	if dst > enemy.attack_range: return false
+	elif is_on_cooldown:
+		if time_elapsed < enemy.attack_cooldown: return false
+	return true
 "
 
 [sub_resource type="GDScript" id="GDScript_khahs"]
@@ -195,23 +223,24 @@ shape = SubResource("SphereShape3D_j4vrh")
 script = ExtResource("6_24dpr")
 metadata/_custom_type_script = "uid://bd2d7mbbshebm"
 
-[node name="Idle" type="Node" parent="StateMachine"]
+[node name="idle" type="Node" parent="StateMachine"]
 script = SubResource("GDScript_bmxbo")
 metadata/_custom_type_script = "uid://b57s6a7jcbphi"
 
-[node name="Chase" type="Node" parent="StateMachine"]
+[node name="chase" type="Node" parent="StateMachine"]
 script = SubResource("GDScript_24dpr")
 metadata/_custom_type_script = "uid://b57s6a7jcbphi"
 
-[node name="Attack" type="Node" parent="StateMachine"]
+[node name="attack" type="Node" parent="StateMachine"]
 script = SubResource("GDScript_wlc73")
 time_until_hit = 0.375
 metadata/_custom_type_script = "uid://b57s6a7jcbphi"
 
-[node name="Hurt" type="Node" parent="StateMachine"]
+[node name="hurt" type="Node" parent="StateMachine"]
 script = SubResource("GDScript_khahs")
+reactivate = true
 metadata/_custom_type_script = "uid://b57s6a7jcbphi"
 
-[node name="Death" type="Node" parent="StateMachine"]
+[node name="death" type="Node" parent="StateMachine"]
 script = SubResource("GDScript_4r688")
 metadata/_custom_type_script = "uid://b57s6a7jcbphi"

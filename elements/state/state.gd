@@ -1,6 +1,11 @@
 class_name State extends Node
 
 
+const NULL_STATE: StringName = &"null"
+
+
+## Should the state be reactivated if requested
+@export var reactivate: bool
 var is_active: bool
 var machine: StateMachine
 
