@@ -1,4 +1,4 @@
-extends Node3D
+extends Level
 
 
 func _ready() -> void:

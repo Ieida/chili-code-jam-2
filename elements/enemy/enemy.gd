@@ -6,6 +6,7 @@ class_name Enemy extends CharacterBody3D
 @export var damage: float = 10
 @export var attack_range: float = 2.0
 @export var attack_cooldown: float = 1.0
+@onready var game: Game = get_node("/root/Game")
 @onready var hitbox: Hitbox = $Hitbox
 @onready var sprite: AnimatedSprite3D = %Sprite
 @onready var state_machine: StateMachine = $StateMachine
@@ -26,4 +27,6 @@ func _physics_process(_delta: float) -> void:
 func _ready() -> void:
 	hitbox.took_hit.connect(_on_took_hit)
 	hitbox.health_depleted.connect(_on_health_depleted)
+	if not game.is_node_ready(): await game.ready
+	elif not game.current_level.is_node_ready(): await game.current_level.ready
 	target = get_tree().get_first_node_in_group(&"players")

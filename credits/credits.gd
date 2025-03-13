@@ -1,4 +1,4 @@
-class_name Credits extends CanvasLayer
+class_name Credits extends GameMenu
 
 
 signal closed
@@ -6,13 +6,14 @@ signal opened
 
 
 @onready var button_container: Container = %ButtonContainer
+@onready var game: Game = get_node("/root/Game")
 
 
 func _input(event: InputEvent) -> void:
 	if event.is_action(&"toggle_credits"):
 		if event.is_pressed() and not event.is_echo():
 			if visible: close()
-			else: open()
+			elif not game.current_menu: open()
 
 
 func _process(_delta: float) -> void:

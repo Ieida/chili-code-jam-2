@@ -7,6 +7,7 @@ class_name Spawner extends Node3D
 @export var radius: float = 16
 @export var initial_amount: int = 32
 @export var on_surface: bool = true
+@onready var game: Game = get_node("/root/Game")
 var time_elapsed: float
 
 
@@ -24,8 +25,12 @@ func _ready() -> void:
 
 
 func spawn():
-	var s = scene.instantiate()
-	get_tree().current_scene.add_child(s)
+	spawn_scene(scene)
+
+
+func spawn_scene(scn: PackedScene):
+	var s = scn.instantiate()
+	game.current_level.add_child(s)
 	if s is Node3D:
 		var p = global_position
 		var rd = Vector3(

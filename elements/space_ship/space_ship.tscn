@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://cxysob5m2s2s3"]
+[gd_scene load_steps=6 format=3 uid="uid://cxysob5m2s2s3"]
 
 [ext_resource type="Script" uid="uid://48knbixyjq3s" path="res://elements/space_ship/space_ship.gd" id="1_q8tqi"]
+[ext_resource type="Script" uid="uid://c4b5reb6ktm03" path="res://elements/hitbox/hitbox.gd" id="2_yhe4x"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_v2f3c"]
 
@@ -14,6 +15,7 @@ script/source = "extends Node3D
 ## Rounds per minute
 @export var rpm: float = 600
 @onready var bullet_scene: PackedScene = preload(\"res://elements/projectile/projectile.tscn\")
+@onready var game: Game = get_node(\"/root/Game\")
 var elapsed_time: float
 var damage_exceptions: Array[CollisionObject3D]
 
@@ -34,7 +36,7 @@ func shoot():
 	var b = bullet_scene.instantiate() as Projectile
 	for e in damage_exceptions:
 		b.add_exception(e)
-	get_tree().current_scene.add_child(b)
+	game.current_level.add_child(b)
 	b.global_transform = global_transform
 "
 
@@ -43,9 +45,19 @@ script = ExtResource("1_q8tqi")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_v2f3c")
+disabled = true
 
 [node name="Model" type="MeshInstance3D" parent="."]
 mesh = SubResource("SphereMesh_q8tqi")
+
+[node name="Hitbox" type="Area3D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2_yhe4x")
+max_health = 100.0
+metadata/_custom_type_script = "uid://c4b5reb6ktm03"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
+shape = SubResource("SphereShape3D_v2f3c")
 
 [node name="Gun" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)

@@ -10,6 +10,7 @@ class_name SpaceShip extends CharacterBody3D
 @export var torque_y: float = 2
 @onready var gun := $Gun
 @onready var gun2 := $Gun2
+@onready var hitbox: Hitbox = %Hitbox
 var input: Vector3
 var angular_input: Vector3
 
@@ -40,4 +41,6 @@ func _physics_process(delta: float) -> void:
 
 func _ready() -> void:
 	gun.damage_exceptions.append(self)
+	gun.damage_exceptions.append(hitbox)
 	gun2.damage_exceptions.append(self)
+	gun2.damage_exceptions.append(hitbox)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bemi7f0nqjn6k"]
+[gd_scene load_steps=15 format=3 uid="uid://bemi7f0nqjn6k"]
 
 [ext_resource type="PackedScene" uid="uid://cxysob5m2s2s3" path="res://elements/space_ship/space_ship.tscn" id="1_7xbuc"]
 [ext_resource type="Script" uid="uid://bedmwh8tw0vn3" path="res://levels/prototype/prototype_level.gd" id="1_yc6rk"]
@@ -6,6 +6,8 @@
 [ext_resource type="Script" uid="uid://c4b5reb6ktm03" path="res://elements/hitbox/hitbox.gd" id="2_x6tsm"]
 [ext_resource type="PackedScene" uid="uid://db2f051odpt0k" path="res://elements/enemy/enemy.tscn" id="3_nkijq"]
 [ext_resource type="PackedScene" uid="uid://3ysej5uji3er" path="res://elements/spawner/spawner.tscn" id="6_t82ty"]
+[ext_resource type="Script" uid="uid://oimysewes1bo" path="res://elements/enemy_spawner.gd" id="7_gl4gk"]
+[ext_resource type="PackedScene" uid="uid://r87fcmqjvefg" path="res://enemies/elite/elite.tscn" id="8_jrhx3"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_yc6rk"]
 sky_top_color = Color(0, 0, 0, 1)
@@ -95,5 +97,14 @@ transform = Transform3D(0.694219, 0, -0.719764, 0, 1, 0, 0.719764, 0, 0.694219, 
 target = NodePath("../Cube")
 speed = 1.0
 
-[node name="Spawner" parent="." instance=ExtResource("6_t82ty")]
-scene = ExtResource("3_nkijq")
+[node name="EnemySpawner" parent="." instance=ExtResource("6_t82ty")]
+script = ExtResource("7_gl4gk")
+normal_scene = ExtResource("3_nkijq")
+normal_wave_multiplier = 1.2
+normals_per_wave = 20
+elite_scene = ExtResource("8_jrhx3")
+elite_wave_multiplier = 1.1
+elites_per_wave = 1
+rate = 1.0
+radius = 32.0
+initial_amount = 1

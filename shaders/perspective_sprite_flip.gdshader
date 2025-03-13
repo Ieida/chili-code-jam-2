@@ -3,6 +3,7 @@ render_mode unshaded, cull_disabled, depth_draw_opaque, depth_prepass_alpha;
 
 uniform bool y_billboard = false; // Enables Y-Billboarding when true
 uniform sampler2D tex: source_color, filter_nearest_mipmap; // A copy of the texture for the Sprite3D or AnimatedSprite3D
+uniform vec4 modulate: source_color;
 
 void vertex() {
 	// You can comment out this function if you don't need billboarding
@@ -26,6 +27,7 @@ void vertex() {
 
 void fragment() {
 	vec4 col = texture(tex, UV);
+	col *= modulate;
 	ALBEDO = vec3(col.r, col.g, col.b);
 	ALPHA = col.a;
 }

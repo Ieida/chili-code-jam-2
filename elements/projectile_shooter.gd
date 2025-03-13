@@ -4,6 +4,7 @@ class_name ProjectileShooter extends Node3D
 @export var projectile_scene: PackedScene
 @export var angle_spread: float = 90
 @export var bullets: int = 3
+@onready var game: Game = get_node("/root/Game")
 var exceptions: Array[CollisionObject3D]
 
 
@@ -19,7 +20,7 @@ func shoot():
 		if b:
 			for e in exceptions:
 				b.add_exception(e)
-			get_tree().current_scene.add_child(b)
+			game.current_level.add_child(b)
 			var br = u.cross(d)
 			b.global_transform = Transform3D(Basis(br, u, d), global_position)
 			d = d.rotated(u, ad)

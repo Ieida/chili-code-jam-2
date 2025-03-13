@@ -1,0 +1,109 @@
+[gd_scene load_steps=9 format=3 uid="uid://r87fcmqjvefg"]
+
+[ext_resource type="PackedScene" uid="uid://db2f051odpt0k" path="res://elements/enemy/enemy.tscn" id="1_jlktv"]
+[ext_resource type="Script" uid="uid://4a30rvk1nnqk" path="res://elements/projectile_shooter.gd" id="2_aq8a1"]
+[ext_resource type="Shader" uid="uid://csmyc2ndd11mc" path="res://shaders/perspective_sprite_flip.gdshader" id="2_gsefx"]
+[ext_resource type="PackedScene" uid="uid://8obo0tdrghcv" path="res://projectiles/green_ball.tscn" id="3_l74sk"]
+[ext_resource type="Texture2D" uid="uid://cn2nhhbcijut" path="res://elements/enemy/Eyeball.png" id="3_wsysa"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bn8ne"]
+atlas = ExtResource("3_wsysa")
+region = Rect2(0, 64, 32, 32)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0ymcn"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_gsefx")
+shader_parameter/y_billboard = false
+shader_parameter/tex = SubResource("AtlasTexture_bn8ne")
+shader_parameter/modulate = Color(0.25, 1, 0, 1)
+
+[sub_resource type="GDScript" id="GDScript_mys7b"]
+resource_name = "projectile_attack"
+script/source = "extends State
+
+
+@export var time_until_hit: float = 0.375
+@onready var enemy: Enemy = $\"../..\"
+@onready var projectile_shooter: ProjectileShooter = %ProjectileShooter
+@onready var sprite: AnimatedSprite3D = %Sprite
+var time_elapsed: float
+var is_on_cooldown: bool
+
+
+func _on_anim_finished():
+	if sprite.animation == &\"attack\":
+		is_on_cooldown = true
+		projectile_shooter.shoot()
+		machine.deactivate_state(self)
+
+
+func _physics_process(delta: float) -> void:
+	time_elapsed = minf(time_elapsed + delta, maxf(time_until_hit, enemy.attack_cooldown))
+	if is_active:
+		enemy.look_at(enemy.target.global_position)
+		if time_elapsed < time_until_hit:
+			time_elapsed += delta
+			if time_elapsed >= time_until_hit:
+				deal_damage()
+	elif should_enter():
+		machine.activate_state(self)
+
+
+func _ready() -> void:
+	sprite.animation_finished.connect(_on_anim_finished)
+	await enemy.ready
+	projectile_shooter.exceptions.append(enemy)
+	projectile_shooter.exceptions.append(enemy.hitbox)
+
+
+func deal_damage():
+	var epos = enemy.global_position
+	var tpos = enemy.target.global_position
+	var dst = epos.distance_to(tpos)
+	if dst < enemy.attack_range:
+		if enemy.target.has_node(^\"Hitbox\"):
+			var hb = enemy.target.get_node(^\"Hitbox\") as Hitbox
+			hb.hit(enemy.damage)
+
+
+func enter():
+	time_elapsed = 0
+	is_on_cooldown = false
+	sprite.play(&\"attack\")
+	enemy.velocity = Vector3.ZERO
+
+
+func exit():
+	time_elapsed = 0
+
+
+func should_enter() -> bool:
+	if machine.active_state_name == &\"attack\": return false
+	elif not enemy.target: return false
+	var dst = enemy.global_position.distance_to(enemy.target.global_position)
+	if dst > enemy.attack_range: return false
+	elif is_on_cooldown:
+		if time_elapsed < enemy.attack_cooldown: return false
+	return true
+"
+
+[node name="Elite" instance=ExtResource("1_jlktv")]
+attack_range = 10.0
+
+[node name="Sprite" parent="." index="1"]
+material_override = SubResource("ShaderMaterial_0ymcn")
+modulate = Color(0.25, 1, 0, 1)
+pixel_size = 0.09
+
+[node name="ProjectileShooter" type="Node3D" parent="." index="3"]
+unique_name_in_owner = true
+script = ExtResource("2_aq8a1")
+projectile_scene = ExtResource("3_l74sk")
+
+[node name="projectile_attack" type="Node" parent="StateMachine" index="2"]
+script = SubResource("GDScript_mys7b")
+metadata/_custom_type_script = "uid://b57s6a7jcbphi"
+
+[node name="attack" parent="StateMachine" index="3"]
+process_mode = 4
