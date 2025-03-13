@@ -102,6 +102,7 @@ var is_on_cooldown: bool
 func _on_anim_finished():
 	if sprite.animation == &\"attack\":
 		is_on_cooldown = true
+		deal_damage()
 		machine.deactivate_state(self)
 
 
