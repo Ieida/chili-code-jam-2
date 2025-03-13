@@ -2,6 +2,7 @@ class_name Projectile extends ShapeCast3D
 
 
 @export var damage: float = 10
+@export var length: float = 0.25
 @export var lifetime: float = 10
 @export var speed: float = 100
 var time_elapsed: float
@@ -12,7 +13,7 @@ func _physics_process(delta: float) -> void:
 	
 	var mov = -global_basis.z.normalized() * speed * delta 
 	global_position += mov
-	target_position = mov
+	target_position = mov + (mov.normalized() * length)
 	force_shapecast_update()
 	if is_colliding():
 		for ci in get_collision_count():

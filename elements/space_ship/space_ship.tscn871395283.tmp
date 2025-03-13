@@ -1,0 +1,57 @@
+[gd_scene load_steps=5 format=3 uid="uid://cxysob5m2s2s3"]
+
+[ext_resource type="Script" uid="uid://48knbixyjq3s" path="res://elements/space_ship/space_ship.gd" id="1_q8tqi"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_v2f3c"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_q8tqi"]
+
+[sub_resource type="GDScript" id="GDScript_q8tqi"]
+resource_name = "gun"
+script/source = "extends Node3D
+
+
+## Rounds per minute
+@export var rpm: float = 600
+@onready var bullet_scene: PackedScene = preload(\"res://elements/projectile/projectile.tscn\")
+var elapsed_time: float
+var damage_exceptions: Array[CollisionObject3D]
+
+
+func _physics_process(delta: float) -> void:
+	if elapsed_time < 60.0 / rpm:
+		elapsed_time += delta
+
+
+func is_ready_to_shoot() -> bool:
+	return elapsed_time >= 60.0 / rpm
+
+
+func shoot():
+	if not is_ready_to_shoot(): return
+	elapsed_time = 0
+	
+	var b = bullet_scene.instantiate() as Projectile
+	for e in damage_exceptions:
+		b.add_exception(e)
+	get_tree().current_scene.add_child(b)
+	b.global_position = global_position
+	b.global_rotation = global_rotation
+"
+
+[node name="SpaceShip" type="CharacterBody3D"]
+script = ExtResource("1_q8tqi")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_v2f3c")
+
+[node name="Model" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_q8tqi")
+
+[node name="Gun" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)
+script = SubResource("GDScript_q8tqi")
+
+[node name="Gun2" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0, 0)
+script = SubResource("GDScript_q8tqi")

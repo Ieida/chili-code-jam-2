@@ -12,6 +12,7 @@ albedo_color = Color(0.25, 0.9, 1, 1)
 [node name="Projectile" type="ShapeCast3D"]
 enabled = false
 shape = SubResource("SphereShape3D_n2axj")
+margin = 0.1
 collide_with_areas = true
 script = ExtResource("1_0thc4")
 

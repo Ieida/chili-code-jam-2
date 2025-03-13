@@ -24,4 +24,6 @@ animations = [{
 
 [node name="Sprite" parent="." index="1"]
 sprite_frames = SubResource("SpriteFrames_g2xjq")
+animation = &"idle"
+frame = 0
 frame_progress = 0.0

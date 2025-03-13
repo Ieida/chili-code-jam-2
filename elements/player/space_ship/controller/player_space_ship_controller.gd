@@ -22,12 +22,15 @@ func _physics_process(_delta: float) -> void:
 	# Aim gun
 	var gn = viewmodel.space_ship.gun
 	var gn2 = viewmodel.space_ship.gun2
-	var t1 = null
-	var t2 = null
-	if targeting.lockons.size() > 0: t1 = targeting.lockons[0].target
-	if targeting.lockons.size() > 1: t2 = targeting.lockons[1].target
-	if t1: gn.look_at(t1.global_position)
-	if t2: gn2.look_at(t2.global_position)
+	var l1 = null
+	var l2 = null
+	if targeting.lockons.size() > 0: l1 = targeting.lockons[0]
+	if targeting.lockons.size() > 1: l2 = targeting.lockons[1]
+	if l1 and l1.target:
+		gn.look_at(l1.target.global_position)
+	if l2 and l2.target:
+		var ap = calc_aiming_point(l2.global_position)
+		gn2.look_at(l2.target.global_position)
 	# Shoot
 	if Input.is_action_pressed(&"shoot"):
 		gn.shoot()
@@ -41,10 +44,9 @@ func _ready() -> void:
 	targeting.spawn_lockon.call_deferred()
 
 
-func calc_aiming_point() -> Vector3:
-	var sp = viewmodel.crosshair.global_position
-	var ro = viewmodel.project_ray_origin(sp)
-	var rn = viewmodel.project_ray_normal(sp)
+func calc_aiming_point(screen_point) -> Vector3:
+	var ro = viewmodel.project_ray_origin(screen_point)
+	var rn = viewmodel.project_ray_normal(screen_point)
 	var wld = viewmodel.get_world_3d()
 	var to = ro + (rn * 1000.0)
 	ray_query_params.from = ro
