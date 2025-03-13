@@ -26,3 +26,4 @@ func _physics_process(_delta: float) -> void:
 func _ready() -> void:
 	hitbox.took_hit.connect(_on_took_hit)
 	hitbox.health_depleted.connect(_on_health_depleted)
+	target = get_tree().get_first_node_in_group(&"players")

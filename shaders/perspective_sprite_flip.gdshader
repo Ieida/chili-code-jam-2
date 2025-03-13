@@ -18,7 +18,8 @@ void vertex() {
 	vec3 right = (MODEL_MATRIX * vec4(1., 0., 0., 0.)).xyz;
 	vec3 node_to_cam = normalize(CAMERA_POSITION_WORLD - NODE_POSITION_WORLD);
 	float dot_prod = dot(right, node_to_cam);
-	if (dot_prod < 0.0) {
+	float angle = dot_prod * 180.0;
+	if (abs(angle) > 15.0 && dot_prod < 0.0) {
 		VERTEX.x = -VERTEX.x;
 	}
 }

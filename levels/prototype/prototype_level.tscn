@@ -84,7 +84,7 @@ billboard = 1
 double_sided = false
 text = "Health: 100"
 
-[node name="SpaceShip" parent="." instance=ExtResource("1_7xbuc")]
+[node name="SpaceShip" parent="." groups=["players"] instance=ExtResource("1_7xbuc")]
 slow_down_force = 16.0
 
 [node name="PlayerSpaceShipViewmodel" parent="SpaceShip" node_paths=PackedStringArray("space_ship") instance=ExtResource("2_pysmo")]

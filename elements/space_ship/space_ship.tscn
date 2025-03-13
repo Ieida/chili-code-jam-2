@@ -35,8 +35,7 @@ func shoot():
 	for e in damage_exceptions:
 		b.add_exception(e)
 	get_tree().current_scene.add_child(b)
-	b.global_position = global_position
-	b.global_rotation = global_rotation
+	b.global_transform = global_transform
 "
 
 [node name="SpaceShip" type="CharacterBody3D"]

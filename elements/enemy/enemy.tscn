@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://db2f051odpt0k"]
+[gd_scene load_steps=19 format=3 uid="uid://db2f051odpt0k"]
 
 [ext_resource type="Script" uid="uid://dgb1e74ge5xdd" path="res://elements/enemy/enemy.gd" id="1_j4vrh"]
 [ext_resource type="SpriteFrames" uid="uid://cvmd8rovf1rno" path="res://elements/enemy/sprite_frames.tres" id="1_ttpur"]
@@ -6,6 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://cn2nhhbcijut" path="res://elements/enemy/Eyeball.png" id="3_1cx0d"]
 [ext_resource type="Script" uid="uid://c4b5reb6ktm03" path="res://elements/hitbox/hitbox.gd" id="5_vjsli"]
 [ext_resource type="Script" uid="uid://bd2d7mbbshebm" path="res://elements/state_machine/state_machine.gd" id="6_24dpr"]
+[ext_resource type="Script" uid="uid://4a30rvk1nnqk" path="res://elements/projectile_shooter.gd" id="6_bmxbo"]
+[ext_resource type="PackedScene" uid="uid://8obo0tdrghcv" path="res://projectiles/green_ball.tscn" id="7_wlc73"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_j4vrh"]
 
@@ -64,7 +66,7 @@ func _physics_process(_delta: float) -> void:
 		var dir = enemy.global_position.direction_to(tpos)
 		enemy.velocity = dir * enemy.speed
 		enemy.look_at(tpos)
-	elif machine.active_state_name == &\"idle\" and enemy.target:
+	elif should_enter():
 		machine.activate_state(self)
 
 
@@ -74,6 +76,84 @@ func enter():
 
 func exit():
 	pass
+
+
+func should_enter() -> bool:
+	if machine.active_state_name != &\"idle\": return false
+	if not enemy.target: return false
+	var dst = enemy.global_position.distance_to(enemy.target.global_position)
+	if dst <= enemy.attack_range: return false
+	return true
+"
+
+[sub_resource type="GDScript" id="GDScript_mys7b"]
+resource_name = "projectile_attack"
+script/source = "extends State
+
+
+@export var time_until_hit: float = 0.375
+@onready var enemy: Enemy = $\"../..\"
+@onready var projectile_shooter: ProjectileShooter = %ProjectileShooter
+@onready var sprite: AnimatedSprite3D = %Sprite
+var time_elapsed: float
+var is_on_cooldown: bool
+
+
+func _on_anim_finished():
+	if sprite.animation == &\"attack\":
+		is_on_cooldown = true
+		projectile_shooter.shoot()
+		machine.deactivate_state(self)
+
+
+func _physics_process(delta: float) -> void:
+	time_elapsed = minf(time_elapsed + delta, maxf(time_until_hit, enemy.attack_cooldown))
+	if is_active:
+		enemy.look_at(enemy.target.global_position)
+		if time_elapsed < time_until_hit:
+			time_elapsed += delta
+			if time_elapsed >= time_until_hit:
+				deal_damage()
+	elif should_enter():
+		machine.activate_state(self)
+
+
+func _ready() -> void:
+	sprite.animation_finished.connect(_on_anim_finished)
+	await enemy.ready
+	projectile_shooter.exceptions.append(enemy)
+	projectile_shooter.exceptions.append(enemy.hitbox)
+
+
+func deal_damage():
+	var epos = enemy.global_position
+	var tpos = enemy.target.global_position
+	var dst = epos.distance_to(tpos)
+	if dst < enemy.attack_range:
+		if enemy.target.has_node(^\"Hitbox\"):
+			var hb = enemy.target.get_node(^\"Hitbox\") as Hitbox
+			hb.hit(enemy.damage)
+
+
+func enter():
+	time_elapsed = 0
+	is_on_cooldown = false
+	sprite.play(&\"attack\")
+	enemy.velocity = Vector3.ZERO
+
+
+func exit():
+	time_elapsed = 0
+
+
+func should_enter() -> bool:
+	if machine.active_state_name == &\"attack\": return false
+	elif not enemy.target: return false
+	var dst = enemy.global_position.distance_to(enemy.target.global_position)
+	if dst > enemy.attack_range: return false
+	elif is_on_cooldown:
+		if time_elapsed < enemy.attack_cooldown: return false
+	return true
 "
 
 [sub_resource type="GDScript" id="GDScript_wlc73"]
@@ -81,7 +161,7 @@ resource_name = "attack"
 script/source = "extends State
 
 
-@export var time_until_hit: float = 0.75
+@export var time_until_hit: float = 0.375
 @onready var enemy: Enemy = $\"../..\"
 @onready var sprite: AnimatedSprite3D = %Sprite
 var time_elapsed: float
@@ -97,6 +177,7 @@ func _on_anim_finished():
 func _physics_process(delta: float) -> void:
 	time_elapsed = minf(time_elapsed + delta, maxf(time_until_hit, enemy.attack_cooldown))
 	if is_active:
+		enemy.look_at(enemy.target.global_position)
 		if time_elapsed < time_until_hit:
 			time_elapsed += delta
 			if time_elapsed >= time_until_hit:
@@ -192,6 +273,7 @@ func enter():
 
 [node name="Enemy" type="CharacterBody3D"]
 script = ExtResource("1_j4vrh")
+attack_range = 10.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_j4vrh")
@@ -217,6 +299,11 @@ metadata/_custom_type_script = "uid://c4b5reb6ktm03"
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
 shape = SubResource("SphereShape3D_j4vrh")
 
+[node name="ProjectileShooter" type="Node3D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("6_bmxbo")
+projectile_scene = ExtResource("7_wlc73")
+
 [node name="StateMachine" type="Node" parent="."]
 script = ExtResource("6_24dpr")
 metadata/_custom_type_script = "uid://bd2d7mbbshebm"
@@ -229,9 +316,13 @@ metadata/_custom_type_script = "uid://b57s6a7jcbphi"
 script = SubResource("GDScript_24dpr")
 metadata/_custom_type_script = "uid://b57s6a7jcbphi"
 
+[node name="projectile_attack" type="Node" parent="StateMachine"]
+script = SubResource("GDScript_mys7b")
+metadata/_custom_type_script = "uid://b57s6a7jcbphi"
+
 [node name="attack" type="Node" parent="StateMachine"]
+process_mode = 4
 script = SubResource("GDScript_wlc73")
-time_until_hit = 0.375
 metadata/_custom_type_script = "uid://b57s6a7jcbphi"
 
 [node name="hurt" type="Node" parent="StateMachine"]
