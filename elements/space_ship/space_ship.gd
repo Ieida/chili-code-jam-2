@@ -10,6 +10,8 @@ class_name SpaceShip extends CharacterBody3D
 @export var torque_y: float = 2
 @onready var gun := $Gun
 @onready var gun2 := $Gun2
+@onready var laser: Laser = $Laser
+@onready var laser2: Laser = $Laser2
 @onready var hitbox: Hitbox = %Hitbox
 var input: Vector3
 var angular_input: Vector3
@@ -44,3 +46,7 @@ func _ready() -> void:
 	gun.damage_exceptions.append(hitbox)
 	gun2.damage_exceptions.append(self)
 	gun2.damage_exceptions.append(hitbox)
+	laser.add_exception(self)
+	laser.add_exception(hitbox)
+	laser2.add_exception(self)
+	laser2.add_exception(hitbox)

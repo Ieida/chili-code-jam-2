@@ -20,20 +20,54 @@ func _physics_process(_delta: float) -> void:
 		viewmodel.space_ship.angular_input = Vector3(h_ain, v_ain, 0)
 	
 	# Aim gun
-	var gn = viewmodel.space_ship.gun
-	var gn2 = viewmodel.space_ship.gun2
-	var l1 = null
-	var l2 = null
+	var l1: LockOnCrosshair = null
+	var l2: LockOnCrosshair = null
 	if targeting.lockons.size() > 0: l1 = targeting.lockons[0]
 	if targeting.lockons.size() > 1: l2 = targeting.lockons[1]
-	if l1 and l1.target:
-		gn.look_at(l1.target.global_position)
-	if l2 and l2.target:
-		gn2.look_at(l2.target.global_position)
 	# Shoot
 	if Input.is_action_pressed(&"shoot"):
-		gn.shoot()
-		gn2.shoot()
+		# Gun 1
+		if l1 and l1.target and l1.is_locked_on:
+			var g = viewmodel.space_ship.gun
+			g.look_at(l1.target.global_position)
+			g.shoot()
+		else:
+			var g = viewmodel.space_ship.gun
+			g.rotation = Vector3.ZERO
+			g.shoot()
+		# Gun 2
+		if l2 and l2.target and l2.is_locked_on:
+			var g = viewmodel.space_ship.gun2
+			g.look_at(l2.target.global_position)
+			g.shoot()
+		else:
+			var g = viewmodel.space_ship.gun2
+			g.rotation = Vector3.ZERO
+			g.shoot()
+	if Input.is_action_pressed(&"alt_fire"):
+		# Gun 1
+		if l1 and l1.target and l1.is_locked_on:
+			var g = viewmodel.space_ship.laser
+			g.look_at(l1.target.global_position)
+			g.is_active = true
+		else:
+			var g = viewmodel.space_ship.laser
+			g.rotation = Vector3.ZERO
+			g.is_active = true
+		# Gun 2
+		if l2 and l2.target and l2.is_locked_on:
+			var g = viewmodel.space_ship.laser2
+			g.look_at(l2.target.global_position)
+			g.is_active = true
+		else:
+			var g = viewmodel.space_ship.laser2
+			g.rotation = Vector3.ZERO
+			g.is_active = true
+	elif not Input.is_action_pressed(&"alt_fire"):
+		if viewmodel.space_ship.laser.is_active:
+			viewmodel.space_ship.laser.is_active = false
+		if viewmodel.space_ship.laser2.is_active:
+			viewmodel.space_ship.laser2.is_active = false
 
 
 func _ready() -> void:

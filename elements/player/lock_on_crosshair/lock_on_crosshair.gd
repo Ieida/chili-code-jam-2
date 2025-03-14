@@ -21,7 +21,10 @@ class_name LockOnCrosshair extends Control
 		queue_redraw()
 var camera: Camera3D
 var is_locked_on: bool
-var target: Node3D
+var target: Node3D:
+	set(value):
+		target = value
+		if not target and is_locked_on: is_locked_on = false
 var time_elapsed: float
 
 

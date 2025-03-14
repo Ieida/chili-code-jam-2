@@ -1,0 +1,46 @@
+[gd_scene load_steps=8 format=3 uid="uid://c4dml4jxjylpm"]
+
+[ext_resource type="Script" uid="uid://ceot3feixlvgw" path="res://weapons/laser/laser.gd" id="1_wmd2k"]
+[ext_resource type="Shader" uid="uid://bsam33a1jtj3" path="res://shaders/laser.gdshader" id="2_rnfmb"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_wmd2k"]
+radius = 0.1
+
+[sub_resource type="Gradient" id="Gradient_wmd2k"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0.433333, 1, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_y0c62"]
+gradient = SubResource("Gradient_wmd2k")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r3fl7"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_rnfmb")
+shader_parameter/albedo = SubResource("GradientTexture1D_y0c62")
+shader_parameter/line_width = 0.2
+shader_parameter/line_length = 1000.0
+shader_parameter/correct_uv = true
+shader_parameter/uv_offset_animation = Vector2(0, 1)
+shader_parameter/default_axis = Vector3(0, 1, 0)
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/brightness = 1.5
+
+[sub_resource type="QuadMesh" id="QuadMesh_rnfmb"]
+resource_local_to_scene = true
+
+[node name="Laser" type="ShapeCast3D"]
+enabled = false
+shape = SubResource("SphereShape3D_wmd2k")
+target_position = Vector3(0, 0, -1000)
+collide_with_areas = true
+script = ExtResource("1_wmd2k")
+is_active = null
+target = Vector3(0, 0, -1000)
+damage = 100.0
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.805311, 0, -0.592852, 0.592852, 0, 0.805311, 0, -1, 0, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_r3fl7")
+extra_cull_margin = 100.0
+mesh = SubResource("QuadMesh_rnfmb")

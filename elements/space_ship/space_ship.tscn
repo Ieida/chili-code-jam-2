@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://cxysob5m2s2s3"]
+[gd_scene load_steps=7 format=3 uid="uid://cxysob5m2s2s3"]
 
 [ext_resource type="Script" uid="uid://48knbixyjq3s" path="res://elements/space_ship/space_ship.gd" id="1_q8tqi"]
 [ext_resource type="Script" uid="uid://c4b5reb6ktm03" path="res://elements/hitbox/hitbox.gd" id="2_yhe4x"]
+[ext_resource type="PackedScene" uid="uid://c4dml4jxjylpm" path="res://weapons/laser/laser.tscn" id="3_rnxcu"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_v2f3c"]
 
@@ -64,5 +65,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)
 script = SubResource("GDScript_q8tqi")
 
 [node name="Gun2" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 7.45058e-09, 0)
 script = SubResource("GDScript_q8tqi")
+
+[node name="Laser" parent="." instance=ExtResource("3_rnxcu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.4, 0)
+is_active = true
+
+[node name="Laser2" parent="." instance=ExtResource("3_rnxcu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, -0.4, 0)
+is_active = true
