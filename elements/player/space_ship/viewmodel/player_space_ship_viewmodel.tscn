@@ -133,6 +133,8 @@ script = ExtResource("1_sem1a")
 look_deadzone = 0.2
 metadata/_custom_type_script = "uid://dnhnmrwpo11g7"
 
+[node name="AudioListener3D" type="AudioListener3D" parent="."]
+
 [node name="Targeting" type="Area3D" parent="."]
 unique_name_in_owner = true
 top_level = true

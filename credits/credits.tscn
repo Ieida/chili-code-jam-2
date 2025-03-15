@@ -84,6 +84,7 @@ DBAC"
 layout_mode = 2
 text = "2D Art
 Ayamos"
+social_link = "https://originalfaithfulpotato.itch.io/"
 
 [node name="CreditsButton4" parent="VBoxContainer/ScrollContainer/ButtonContainer" instance=ExtResource("2_o7wt1")]
 layout_mode = 2
