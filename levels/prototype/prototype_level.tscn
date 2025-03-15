@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://bemi7f0nqjn6k"]
+[gd_scene load_steps=18 format=3 uid="uid://bemi7f0nqjn6k"]
 
 [ext_resource type="PackedScene" uid="uid://cxysob5m2s2s3" path="res://elements/space_ship/space_ship.tscn" id="1_7xbuc"]
 [ext_resource type="Script" uid="uid://bedmwh8tw0vn3" path="res://levels/prototype/prototype_level.gd" id="1_yc6rk"]
@@ -51,6 +51,24 @@ func _ready() -> void:
 	play()
 "
 
+[sub_resource type="GDScript" id="GDScript_o8nxb"]
+resource_name = "screenshot_taker"
+script/source = "extends Node
+
+
+func _input(event: InputEvent) -> void:
+	if OS.get_name() != \"Windows\": return
+	if event.is_action(&\"screenshot\"):
+		if event.is_pressed() and not event.is_echo():
+			take_screenshot()
+
+
+func take_screenshot():
+	var tex = get_viewport().get_texture()
+	var img = tex.get_image()
+	img.save_png(\"user://screenshot.png\")
+"
+
 [node name="PrototypeLevel" type="Node3D"]
 script = ExtResource("1_yc6rk")
 
@@ -88,3 +106,6 @@ rate = 0.0
 radius = 1024.0
 initial_amount = 2048
 metadata/_custom_type_script = "uid://bfi4ld3021gwk"
+
+[node name="ScreenshotTaker" type="Node" parent="."]
+script = SubResource("GDScript_o8nxb")
