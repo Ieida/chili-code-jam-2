@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bemi7f0nqjn6k"]
+[gd_scene load_steps=17 format=3 uid="uid://bemi7f0nqjn6k"]
 
 [ext_resource type="PackedScene" uid="uid://cxysob5m2s2s3" path="res://elements/space_ship/space_ship.tscn" id="1_7xbuc"]
 [ext_resource type="Script" uid="uid://bedmwh8tw0vn3" path="res://levels/prototype/prototype_level.gd" id="1_yc6rk"]
@@ -9,6 +9,8 @@
 [ext_resource type="AudioStream" uid="uid://bf5j71tfqk14l" path="res://music/action.wav" id="8_2dl6f"]
 [ext_resource type="PackedScene" uid="uid://r87fcmqjvefg" path="res://enemies/elite/elite.tscn" id="8_jrhx3"]
 [ext_resource type="AudioStream" uid="uid://cl4fuli6cbr5j" path="res://music/action2.wav" id="9_1fcek"]
+[ext_resource type="Script" uid="uid://cmkjb0lixc2w8" path="res://elements/star_spawner.gd" id="10_1fcek"]
+[ext_resource type="PackedScene" uid="uid://ypbmrqtcw3qc" path="res://stars/star.tscn" id="11_o8nxb"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_yc6rk"]
 sky_top_color = Color(0, 0, 0, 1)
@@ -55,9 +57,6 @@ script = ExtResource("1_yc6rk")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_nkijq")
 
-[node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 0, 0, 0)
-
 [node name="SpaceShip" parent="." groups=["players"] instance=ExtResource("1_7xbuc")]
 slow_down_force = 16.0
 
@@ -79,4 +78,13 @@ initial_amount = 1
 
 [node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
 stream = SubResource("AudioStreamRandomizer_o8nxb")
+volume_db = -10.306
 script = SubResource("GDScript_2dl6f")
+
+[node name="StarSpawner" type="Node3D" parent="."]
+script = ExtResource("10_1fcek")
+scene = ExtResource("11_o8nxb")
+rate = 0.0
+radius = 1024.0
+initial_amount = 2048
+metadata/_custom_type_script = "uid://bfi4ld3021gwk"

@@ -8,6 +8,11 @@ class_name PlayerSpaceShipController extends Node
 var ray_query_params: PhysicsRayQueryParameters3D
 
 
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+
 func _physics_process(_delta: float) -> void:
 	var h_in := Input.get_axis(&"left", &"right")
 	var v_in := Input.get_axis(&"down", &"up")

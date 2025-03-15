@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://ypbmrqtcw3qc"]
+
+[node name="Star" type="Sprite3D"]
+pixel_size = 0.5
+texture_filter = 2

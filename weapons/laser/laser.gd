@@ -1,4 +1,3 @@
-@tool
 class_name Laser extends ShapeCast3D
 
 
@@ -15,8 +14,6 @@ var width_changed: bool
 
 func _process(_delta: float) -> void:
 	var c = get_viewport().get_camera_3d()
-	if Engine.is_editor_hint():
-		c = EditorInterface.get_editor_viewport_3d(0).get_camera_3d()
 	if c:
 		var pt = c.global_position - global_position
 		var pp = Plane(-global_basis.z).project(pt)
@@ -39,17 +36,11 @@ func _physics_process(delta: float) -> void:
 		force_shapecast_update()
 		if is_colliding():
 			target = get_collision_point(0)
-			if not Engine.is_editor_hint():
-				for ci in get_collision_count():
-					var c = get_collider(ci)
-					if c is Hitbox:
-						c.hit(damage * delta)
+			for ci in get_collision_count():
+				var c = get_collider(ci)
+				if c is Hitbox:
+					c.hit(damage * delta)
 		else:
 			var l = 1000.
 			target = -global_basis.z * l
-	elif not Engine.is_editor_hint() and is_visible_in_tree(): hide()
-
-
-func _ready() -> void:
-	if not Engine.is_editor_hint():
-		is_active = false
+	elif is_visible_in_tree(): hide()
