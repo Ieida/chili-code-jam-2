@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://db2f051odpt0k"]
+[gd_scene load_steps=15 format=3 uid="uid://db2f051odpt0k"]
 
 [ext_resource type="Script" uid="uid://dgb1e74ge5xdd" path="res://elements/enemy/enemy.gd" id="1_j4vrh"]
 [ext_resource type="SpriteFrames" uid="uid://cvmd8rovf1rno" path="res://elements/enemy/sprite_frames.tres" id="1_ttpur"]
@@ -87,72 +87,6 @@ func should_enter() -> bool:
 	return true
 "
 
-[sub_resource type="GDScript" id="GDScript_wlc73"]
-resource_name = "attack"
-script/source = "extends State
-
-
-@export var time_until_hit: float = 0.375
-@onready var enemy: Enemy = $\"../..\"
-@onready var sprite: AnimatedSprite3D = %Sprite
-var time_elapsed: float
-var is_on_cooldown: bool
-
-
-func _on_anim_finished():
-	if sprite.animation == &\"attack\":
-		is_on_cooldown = true
-		deal_damage()
-		machine.deactivate_state(self)
-
-
-func _physics_process(delta: float) -> void:
-	time_elapsed = minf(time_elapsed + delta, maxf(time_until_hit, enemy.attack_cooldown))
-	if is_active:
-		enemy.look_at(enemy.target.global_position)
-		if time_elapsed < time_until_hit:
-			time_elapsed += delta
-			if time_elapsed >= time_until_hit:
-				deal_damage()
-	elif should_enter():
-		machine.activate_state(self)
-
-
-func _ready() -> void:
-	sprite.animation_finished.connect(_on_anim_finished)
-
-
-func deal_damage():
-	var epos = enemy.global_position
-	var tpos = enemy.target.global_position
-	var dst = epos.distance_to(tpos)
-	if dst < enemy.attack_range:
-		if enemy.target.has_node(^\"Hitbox\"):
-			var hb = enemy.target.get_node(^\"Hitbox\") as Hitbox
-			hb.hit(enemy.damage)
-
-
-func enter():
-	time_elapsed = 0
-	is_on_cooldown = false
-	sprite.play(&\"attack\")
-	enemy.velocity = Vector3.ZERO
-
-
-func exit():
-	time_elapsed = 0
-
-
-func should_enter() -> bool:
-	if machine.active_state_name == &\"attack\": return false
-	elif not enemy.target: return false
-	var dst = enemy.global_position.distance_to(enemy.target.global_position)
-	if dst > enemy.attack_range: return false
-	elif is_on_cooldown:
-		if time_elapsed < enemy.attack_cooldown: return false
-	return true
-"
-
 [sub_resource type="GDScript" id="GDScript_khahs"]
 resource_name = "hurt"
 script/source = "extends State
@@ -205,6 +139,7 @@ func enter():
 
 [node name="Enemy" type="CharacterBody3D"]
 script = ExtResource("1_j4vrh")
+attack_cooldown = 0.5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_j4vrh")
@@ -240,10 +175,6 @@ metadata/_custom_type_script = "uid://b57s6a7jcbphi"
 
 [node name="chase" type="Node" parent="StateMachine"]
 script = SubResource("GDScript_24dpr")
-metadata/_custom_type_script = "uid://b57s6a7jcbphi"
-
-[node name="attack" type="Node" parent="StateMachine"]
-script = SubResource("GDScript_wlc73")
 metadata/_custom_type_script = "uid://b57s6a7jcbphi"
 
 [node name="hurt" type="Node" parent="StateMachine"]

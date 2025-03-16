@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://c2c6chtsq2qkt"]
+
+[ext_resource type="PackedScene" uid="uid://ckksm8wh1v02a" path="res://elements/projectile/projectile.tscn" id="1_rgfps"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0thc4"]
+shading_mode = 0
+albedo_color = Color(0.25, 0.9, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_rgfps"]
+material = SubResource("StandardMaterial3D_0thc4")
+size = Vector3(0.05, 0.05, 0.5)
+
+[node name="Laser" instance=ExtResource("1_rgfps")]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="0"]
+mesh = SubResource("BoxMesh_rgfps")

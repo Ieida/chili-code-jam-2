@@ -23,3 +23,4 @@ func spawn_scene(scn: PackedScene):
 	else: tex = load("res://stars/star2.png")
 	s.texture = tex
 	s.pixel_size = 0.2 + randf_range(0, 0.3)
+	s.modulate = Color(1, 1, 1, 0).lerp(Color.WHITE, maxf(0.1, randf()))

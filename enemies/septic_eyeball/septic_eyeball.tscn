@@ -18,7 +18,7 @@ shader_parameter/y_billboard = false
 shader_parameter/tex = SubResource("AtlasTexture_bn8ne")
 shader_parameter/modulate = Color(0.25, 1, 0, 1)
 
-[sub_resource type="GDScript" id="GDScript_mys7b"]
+[sub_resource type="GDScript" id="GDScript_syg34"]
 resource_name = "projectile_attack"
 script/source = "extends State
 
@@ -34,7 +34,6 @@ var is_on_cooldown: bool
 func _on_anim_finished():
 	if sprite.animation == &\"attack\":
 		is_on_cooldown = true
-		projectile_shooter.shoot()
 		machine.deactivate_state(self)
 
 
@@ -45,7 +44,7 @@ func _physics_process(delta: float) -> void:
 		if time_elapsed < time_until_hit:
 			time_elapsed += delta
 			if time_elapsed >= time_until_hit:
-				deal_damage()
+				projectile_shooter.shoot(enemy.damage)
 	elif should_enter():
 		machine.activate_state(self)
 
@@ -55,16 +54,6 @@ func _ready() -> void:
 	await enemy.ready
 	projectile_shooter.exceptions.append(enemy)
 	projectile_shooter.exceptions.append(enemy.hitbox)
-
-
-func deal_damage():
-	var epos = enemy.global_position
-	var tpos = enemy.target.global_position
-	var dst = epos.distance_to(tpos)
-	if dst < enemy.attack_range:
-		if enemy.target.has_node(^\"Hitbox\"):
-			var hb = enemy.target.get_node(^\"Hitbox\") as Hitbox
-			hb.hit(enemy.damage)
 
 
 func enter():
@@ -88,8 +77,9 @@ func should_enter() -> bool:
 	return true
 "
 
-[node name="Elite" instance=ExtResource("1_jlktv")]
-attack_range = 10.0
+[node name="SepticEyeball" instance=ExtResource("1_jlktv")]
+damage = 30.0
+attack_range = 16.0
 
 [node name="Sprite" parent="." index="1"]
 material_override = SubResource("ShaderMaterial_0ymcn")
@@ -102,8 +92,6 @@ script = ExtResource("2_aq8a1")
 projectile_scene = ExtResource("3_l74sk")
 
 [node name="projectile_attack" type="Node" parent="StateMachine" index="2"]
-script = SubResource("GDScript_mys7b")
+script = SubResource("GDScript_syg34")
+time_until_hit = 0.188
 metadata/_custom_type_script = "uid://b57s6a7jcbphi"
-
-[node name="attack" parent="StateMachine" index="3"]
-process_mode = 4

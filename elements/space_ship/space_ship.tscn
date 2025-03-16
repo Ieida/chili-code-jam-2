@@ -15,7 +15,7 @@ script/source = "extends Node3D
 
 ## Rounds per minute
 @export var rpm: float = 600
-@onready var bullet_scene: PackedScene = preload(\"res://elements/projectile/projectile.tscn\")
+@onready var bullet_scene: PackedScene = preload(\"res://projectiles/laser.tscn\")
 @onready var game: Game = get_node(\"/root/Game\")
 var elapsed_time: float
 var damage_exceptions: Array[CollisionObject3D]
@@ -53,6 +53,7 @@ mesh = SubResource("SphereMesh_q8tqi")
 
 [node name="Hitbox" type="Area3D" parent="."]
 unique_name_in_owner = true
+monitoring = false
 script = ExtResource("2_yhe4x")
 max_health = 100.0
 metadata/_custom_type_script = "uid://c4b5reb6ktm03"

@@ -8,7 +8,7 @@ class_name ProjectileShooter extends Node3D
 var exceptions: Array[CollisionObject3D]
 
 
-func shoot():
+func shoot(damage_override: float):
 	if not projectile_scene: return
 	
 	var ad = deg_to_rad(angle_spread / float(bullets))
@@ -18,6 +18,7 @@ func shoot():
 	for bi in bullets:
 		var b = projectile_scene.instantiate() as Projectile
 		if b:
+			b.damage = damage_override
 			for e in exceptions:
 				b.add_exception(e)
 			game.current_level.add_child(b)

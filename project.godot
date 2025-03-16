@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="Chili Code Jam 2"
-run/main_scene="uid://c1hwk0wp656jh"
+run/main_scene="uid://bvfs2jaqu1g60"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[audio]
+
+driver/output_latency.web=100
 
 [display]
 

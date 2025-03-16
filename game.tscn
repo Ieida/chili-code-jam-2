@@ -1,9 +1,27 @@
-[gd_scene load_steps=5 format=3 uid="uid://c1hwk0wp656jh"]
+[gd_scene load_steps=6 format=3 uid="uid://c1hwk0wp656jh"]
 
 [ext_resource type="Script" uid="uid://iuymiq0pp0og" path="res://game.gd" id="1_80nbo"]
 [ext_resource type="PackedScene" uid="uid://bemi7f0nqjn6k" path="res://levels/prototype/prototype_level.tscn" id="2_e2o6t"]
 [ext_resource type="PackedScene" uid="uid://eyhstgyqsf0f" path="res://menus/game_over/game_over.tscn" id="3_fc0e3"]
 [ext_resource type="PackedScene" uid="uid://127hajybfir7" path="res://credits/credits.tscn" id="3_feb5d"]
+
+[sub_resource type="GDScript" id="GDScript_fc0e3"]
+resource_name = "screenshot_taker"
+script/source = "extends Node
+
+
+func _input(event: InputEvent) -> void:
+	if OS.get_name() != \"Windows\": return
+	if event.is_action(&\"screenshot\"):
+		if event.is_pressed() and not event.is_echo():
+			take_screenshot()
+
+
+func take_screenshot():
+	var tex = get_viewport().get_texture()
+	var img = tex.get_image()
+	img.save_png(\"user://screenshot.png\")
+"
 
 [node name="Game" type="Node"]
 script = ExtResource("1_80nbo")
@@ -24,3 +42,6 @@ offset_bottom = 142.5
 
 [node name="Credits" parent="Menus" instance=ExtResource("3_feb5d")]
 unique_name_in_owner = true
+
+[node name="ScreenshotTaker" type="Node" parent="."]
+script = SubResource("GDScript_fc0e3")

@@ -1,0 +1,92 @@
+[gd_scene load_steps=7 format=3 uid="uid://b681agjfq4ec6"]
+
+[ext_resource type="PackedScene" uid="uid://db2f051odpt0k" path="res://elements/enemy/enemy.tscn" id="1_fjwad"]
+[ext_resource type="Shader" uid="uid://csmyc2ndd11mc" path="res://shaders/perspective_sprite_flip.gdshader" id="2_i024r"]
+[ext_resource type="Texture2D" uid="uid://cn2nhhbcijut" path="res://elements/enemy/Eyeball.png" id="3_bieg4"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bn8ne"]
+atlas = ExtResource("3_bieg4")
+region = Rect2(0, 64, 32, 32)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nmwgy"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_i024r")
+shader_parameter/y_billboard = false
+shader_parameter/tex = SubResource("AtlasTexture_bn8ne")
+shader_parameter/modulate = Color(1, 1, 1, 1)
+
+[sub_resource type="GDScript" id="GDScript_fjwad"]
+resource_name = "attack"
+script/source = "extends State
+
+
+@export var time_until_hit: float = 0.375
+@onready var enemy: Enemy = $\"../..\"
+@onready var sprite: AnimatedSprite3D = %Sprite
+var time_elapsed: float
+var is_on_cooldown: bool
+
+
+func _on_anim_finished():
+	if sprite.animation == &\"attack\":
+		is_on_cooldown = true
+		deal_damage()
+		machine.deactivate_state(self)
+
+
+func _physics_process(delta: float) -> void:
+	time_elapsed = minf(time_elapsed + delta, maxf(time_until_hit, enemy.attack_cooldown))
+	if is_active:
+		enemy.look_at(enemy.target.global_position)
+		if time_elapsed < time_until_hit:
+			time_elapsed += delta
+			if time_elapsed >= time_until_hit:
+				deal_damage()
+	elif should_enter():
+		machine.activate_state(self)
+
+
+func _ready() -> void:
+	sprite.animation_finished.connect(_on_anim_finished)
+
+
+func deal_damage():
+	var epos = enemy.global_position
+	var tpos = enemy.target.global_position
+	var dst = epos.distance_to(tpos)
+	if dst < enemy.attack_range:
+		if enemy.target.has_node(^\"Hitbox\"):
+			var hb = enemy.target.get_node(^\"Hitbox\") as Hitbox
+			hb.hit(enemy.damage)
+
+
+func enter():
+	time_elapsed = 0
+	is_on_cooldown = false
+	sprite.play(&\"attack\")
+	enemy.velocity = Vector3.ZERO
+
+
+func exit():
+	time_elapsed = 0
+
+
+func should_enter() -> bool:
+	if machine.active_state_name == &\"attack\": return false
+	elif not enemy.target: return false
+	var dst = enemy.global_position.distance_to(enemy.target.global_position)
+	if dst > enemy.attack_range: return false
+	elif is_on_cooldown:
+		if time_elapsed < enemy.attack_cooldown: return false
+	return true
+"
+
+[node name="Eyeball" instance=ExtResource("1_fjwad")]
+
+[node name="Sprite" parent="." index="1"]
+material_override = SubResource("ShaderMaterial_nmwgy")
+
+[node name="attack" type="Node" parent="StateMachine" index="2"]
+script = SubResource("GDScript_fjwad")
+metadata/_custom_type_script = "uid://b57s6a7jcbphi"

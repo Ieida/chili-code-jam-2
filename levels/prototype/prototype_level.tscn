@@ -1,13 +1,13 @@
-[gd_scene load_steps=18 format=3 uid="uid://bemi7f0nqjn6k"]
+[gd_scene load_steps=17 format=3 uid="uid://bemi7f0nqjn6k"]
 
 [ext_resource type="PackedScene" uid="uid://cxysob5m2s2s3" path="res://elements/space_ship/space_ship.tscn" id="1_7xbuc"]
 [ext_resource type="Script" uid="uid://bedmwh8tw0vn3" path="res://levels/prototype/prototype_level.gd" id="1_yc6rk"]
 [ext_resource type="PackedScene" uid="uid://bby5t845icj60" path="res://elements/player/space_ship/viewmodel/player_space_ship_viewmodel.tscn" id="2_pysmo"]
-[ext_resource type="PackedScene" uid="uid://db2f051odpt0k" path="res://elements/enemy/enemy.tscn" id="3_nkijq"]
+[ext_resource type="PackedScene" uid="uid://b681agjfq4ec6" path="res://enemies/eyeball/eyeball.tscn" id="6_o8nxb"]
 [ext_resource type="PackedScene" uid="uid://3ysej5uji3er" path="res://elements/spawner/spawner.tscn" id="6_t82ty"]
 [ext_resource type="Script" uid="uid://oimysewes1bo" path="res://elements/enemy_spawner.gd" id="7_gl4gk"]
 [ext_resource type="AudioStream" uid="uid://bf5j71tfqk14l" path="res://music/action.wav" id="8_2dl6f"]
-[ext_resource type="PackedScene" uid="uid://r87fcmqjvefg" path="res://enemies/elite/elite.tscn" id="8_jrhx3"]
+[ext_resource type="PackedScene" uid="uid://r87fcmqjvefg" path="res://enemies/septic_eyeball/septic_eyeball.tscn" id="8_jrhx3"]
 [ext_resource type="AudioStream" uid="uid://cl4fuli6cbr5j" path="res://music/action2.wav" id="9_1fcek"]
 [ext_resource type="Script" uid="uid://cmkjb0lixc2w8" path="res://elements/star_spawner.gd" id="10_1fcek"]
 [ext_resource type="PackedScene" uid="uid://ypbmrqtcw3qc" path="res://stars/star.tscn" id="11_o8nxb"]
@@ -51,24 +51,6 @@ func _ready() -> void:
 	play()
 "
 
-[sub_resource type="GDScript" id="GDScript_o8nxb"]
-resource_name = "screenshot_taker"
-script/source = "extends Node
-
-
-func _input(event: InputEvent) -> void:
-	if OS.get_name() != \"Windows\": return
-	if event.is_action(&\"screenshot\"):
-		if event.is_pressed() and not event.is_echo():
-			take_screenshot()
-
-
-func take_screenshot():
-	var tex = get_viewport().get_texture()
-	var img = tex.get_image()
-	img.save_png(\"user://screenshot.png\")
-"
-
 [node name="PrototypeLevel" type="Node3D"]
 script = ExtResource("1_yc6rk")
 
@@ -84,7 +66,7 @@ space_ship = NodePath("..")
 [node name="EnemySpawner" parent="." instance=ExtResource("6_t82ty")]
 unique_name_in_owner = true
 script = ExtResource("7_gl4gk")
-normal_scene = ExtResource("3_nkijq")
+normal_scene = ExtResource("6_o8nxb")
 normal_wave_multiplier = 1.2
 normals_per_wave = 20
 elite_scene = ExtResource("8_jrhx3")
@@ -96,7 +78,8 @@ initial_amount = 1
 
 [node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
 stream = SubResource("AudioStreamRandomizer_o8nxb")
-volume_db = -10.306
+volume_db = -15.0
+mix_target = 1
 script = SubResource("GDScript_2dl6f")
 
 [node name="StarSpawner" type="Node3D" parent="."]
@@ -104,8 +87,5 @@ script = ExtResource("10_1fcek")
 scene = ExtResource("11_o8nxb")
 rate = 0.0
 radius = 1024.0
-initial_amount = 2048
+initial_amount = 1024
 metadata/_custom_type_script = "uid://bfi4ld3021gwk"
-
-[node name="ScreenshotTaker" type="Node" parent="."]
-script = SubResource("GDScript_o8nxb")

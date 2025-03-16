@@ -28,5 +28,4 @@ func spawn():
 		for ei in int(ec):
 			spawn_scene(elite_scene)
 		wave += 1
-		print("wave started")
 		wave_started.emit()

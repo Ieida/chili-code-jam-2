@@ -1,17 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://8obo0tdrghcv"]
+[gd_scene load_steps=4 format=3 uid="uid://8obo0tdrghcv"]
 
 [ext_resource type="PackedScene" uid="uid://ckksm8wh1v02a" path="res://elements/projectile/projectile.tscn" id="1_a7duq"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_a7duq"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kpkkb"]
 shading_mode = 0
 albedo_color = Color(0, 1, 0, 1)
 
 [node name="GreenBall" instance=ExtResource("1_a7duq")]
+shape = SubResource("SphereShape3D_a7duq")
 speed = 16.0
 
-[node name="CSGBox3D" parent="." index="0"]
-visible = false
-
-[node name="CSGSphere3D" type="CSGSphere3D" parent="." index="1"]
-radius = 0.25
+[node name="CSGSphere3D" type="CSGSphere3D" parent="." index="0"]
 material = SubResource("StandardMaterial3D_kpkkb")

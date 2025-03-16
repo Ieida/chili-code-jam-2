@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://127hajybfir7"]
+[gd_scene load_steps=8 format=3 uid="uid://127hajybfir7"]
 
 [ext_resource type="Script" uid="uid://cpkylib3kcxtf" path="res://credits/credits.gd" id="1_5uwby"]
 [ext_resource type="PackedScene" uid="uid://dum1teawv8qjg" path="res://credits/credits_button.tscn" id="2_o7wt1"]
@@ -13,6 +13,12 @@ content_margin_bottom = 32.0
 bg_color = Color(0, 0, 0, 0.9)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s541x"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xjpbh"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
 
 [node name="Credits" type="PanelContainer"]
 process_mode = 3
@@ -44,6 +50,7 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_s541x")
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_xjpbh")
 
 [node name="ButtonContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
 unique_name_in_owner = true

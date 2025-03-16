@@ -1,6 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://blqeiynsxdax7"]
+[gd_scene load_steps=5 format=3 uid="uid://blqeiynsxdax7"]
 
 [ext_resource type="PackedScene" uid="uid://db2f051odpt0k" path="res://elements/enemy/enemy.tscn" id="1_h5nhs"]
+[ext_resource type="Shader" uid="uid://csmyc2ndd11mc" path="res://shaders/perspective_sprite_flip.gdshader" id="2_xvwgq"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7s5an"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_xvwgq")
+shader_parameter/y_billboard = false
+shader_parameter/modulate = Color(1, 1, 1, 1)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_g2xjq"]
 animations = [{
@@ -23,7 +31,6 @@ animations = [{
 [node name="Monster" instance=ExtResource("1_h5nhs")]
 
 [node name="Sprite" parent="." index="1"]
+material_override = SubResource("ShaderMaterial_7s5an")
 sprite_frames = SubResource("SpriteFrames_g2xjq")
 animation = &"idle"
-frame = 0
-frame_progress = 0.0
