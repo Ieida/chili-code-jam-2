@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://bby5t845icj60"]
+[gd_scene load_steps=7 format=3 uid="uid://bby5t845icj60"]
 
 [ext_resource type="Script" uid="uid://cwjotnjhe75ms" path="res://elements/player/space_ship/viewmodel/player_space_ship_viewmodel.gd" id="1_3e46h"]
 [ext_resource type="Script" uid="uid://dnhnmrwpo11g7" path="res://elements/player/space_ship/controller/player_space_ship_controller.gd" id="1_sem1a"]
 [ext_resource type="Script" uid="uid://bgqaxwbmtd50t" path="res://elements/player/crosshair/crosshair.gd" id="3_p03w2"]
+[ext_resource type="PackedScene" uid="uid://cccvfvptoviux" path="res://elements/life/life.tscn" id="4_ibnwf"]
 
 [sub_resource type="GDScript" id="GDScript_p03w2"]
 resource_name = "targeting"
@@ -166,3 +167,10 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("3_p03w2")
 metadata/_custom_type_script = "uid://bgqaxwbmtd50t"
+
+[node name="Lives" type="HBoxContainer" parent="UI/HUD"]
+layout_mode = 1
+
+[node name="Life" parent="UI/HUD/Lives" instance=ExtResource("4_ibnwf")]
+layout_mode = 2
+animate = null
